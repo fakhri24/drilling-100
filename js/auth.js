@@ -112,8 +112,8 @@ auth.onAuthStateChanged(async (user) => {
     return;
   }
 
-  if (hasName && currentPage === "setup-username.html") {
-    // Sudah punya username → redirect ke dashboard
+  if (hasName && (currentPage === "setup-username.html" || currentPage === "login.html")) {
+    // Sudah punya username tapi masih di halaman setup/login → redirect ke dashboard
     window.location.href = "dashboard.html";
   }
 });
