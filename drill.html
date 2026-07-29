@@ -18,12 +18,14 @@
   <div class="container">
     <div class="loading" id="loading">Memuat...</div>
 
-    <!-- Drill Area (hidden until loaded) -->
+    <!-- Drill Area -->
     <div id="drill-area" style="display:none">
       <div class="drill-header">
         <a href="index.html" style="font-size:0.9rem; color:var(--text-secondary)">← Kembali</a>
         <div class="drill-counter" id="drill-counter">0 / 100</div>
       </div>
+
+      <h2 id="judul-kompetensi" style="font-size:1rem; margin-bottom:12px; color:var(--text-secondary)"></h2>
 
       <div class="drill-progress">
         <div class="progress-bar">
@@ -36,14 +38,15 @@
         <input type="text" id="jawaban-input" placeholder="Jawabanmu"
                autocomplete="off" inputmode="numeric">
         <div class="mt-16">
-          <button class="btn btn-primary" id="btn-jawab" onclick="submitJawaban()">Jawab</button>
+          <button class="btn btn-primary" id="btn-jawab" onclick="engine.submitJawaban()">Jawab</button>
+          <button class="btn btn-primary" id="btn-next" onclick="engine.nextSoal()" style="display:none">Soal Berikutnya →</button>
         </div>
       </div>
 
       <div id="feedback-area"></div>
     </div>
 
-    <!-- Hasil Area (hidden until selesai) -->
+    <!-- Hasil Area -->
     <div id="hasil-area" style="display:none">
       <div class="card">
         <div class="hasil">
@@ -79,17 +82,26 @@
   <script src="js/auth.js"></script>
   <script src="js/progres.js"></script>
   <script src="js/drill-engine.js"></script>
+
+  <!-- Materi scripts — load all (registers KOMPETENSI_XX globals) -->
+  <script src="js/materi/01-operasi-aritmatika-dasar.js"></script>
+  <!-- TODO: tambah materi lain saat FASE 3-5 -->
+
   <script>
-    // Akan diisi oleh drill engine + materi file
-    // Untuk sekarang placeholder
-    let currentUser = null;
-    let currentKompetensi = null;
-    let soalIndex = 0;
-    let soalSekarang = null;
+    // Registry: kompetensiId → config
+    const REGISTRY = {};
+
+    // Register semua kompetensi dari materi files
+    function registerMateri(list) {
+      list.forEach(k => { REGISTRY[k.id] = k; });
+    }
+    registerMateri(KOMPETENSI_01);
+    // TODO: registerMateri(KOMPETENSI_02); ... dst
+
+    let engine = null;
 
     auth.onAuthStateChanged(async (user) => {
       if (!user) return;
-      currentUser = user;
 
       const username = await getUsername(user.uid);
       const navUser = document.getElementById("nav-user");
@@ -97,14 +109,35 @@
       navUsername.textContent = username || user.displayName;
       navUser.style.display = "flex";
 
-      // TODO: Load kompetensi dari URL param & generate soal
-      document.getElementById("loading").textContent = "Drill engine belum tersedia. Coming soon!";
-    });
+      // Ambil kompetensiId dari URL
+      const params = new URLSearchParams(window.location.search);
+      const kompetensiId = params.get("kompetensi");
 
-    function submitJawaban() {
-      // Placeholder — akan diimplementasi di FASE 2
-      console.log("Submit jawaban");
-    }
+      if (!kompetensiId || !REGISTRY[kompetensiId]) {
+        document.getElementById("loading").innerHTML =
+          `Kompetensi tidak ditemukan.<br><a href="index.html">← Kembali</a>`;
+        return;
+      }
+
+      // Init engine
+      const config = REGISTRY[kompetensiId];
+      engine = new DrillEngine(config);
+
+      // Keyboard: Enter = Jawab / Next
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const btnJawab = document.getElementById("btn-jawab");
+          const btnNext = document.getElementById("btn-next");
+          if (btnNext.style.display !== "none") {
+            engine.nextSoal();
+          } else if (btnJawab.style.display !== "none") {
+            engine.submitJawaban();
+          }
+        }
+      });
+
+      await engine.init(user);
+    });
   </script>
 </body>
 </html>
