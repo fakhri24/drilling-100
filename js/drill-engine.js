@@ -9,6 +9,18 @@ function randInt(min, max) {
 }
 
 /**
+ * FPB (greatest common divisor) dua bilangan bulat positif
+ */
+function gcd(a, b) {
+  a = Math.abs(a);
+  b = Math.abs(b);
+  while (b) {
+    [a, b] = [b, a % b];
+  }
+  return a;
+}
+
+/**
  * Parse jawaban siswa ke angka.
  * Toleransi: koma sebagai desimal ("0,5"), dan pecahan ("1/2", "-3/4")
  * @returns {number|null}

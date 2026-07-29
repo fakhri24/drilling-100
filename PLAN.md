@@ -46,33 +46,35 @@
 
 ---
 
-### FASE 3: Materi 01-04 (Hari 3-5)
-- [ ] `01-operasi-aritmatika-dasar.js` (6 kompetensi)
+### FASE 3: Materi 01-04 (Hari 3-5) ✅
+- [x] `01-operasi-aritmatika-dasar.js` (6 kompetensi)
   - 1a: Penjumlahan tanda sama — pola `(±a) + (±b) = ?`
   - 1b: Penjumlahan tanda beda — pola `(±a) + (∓b) = ?`
   - 1c: Pengurangan — pola `(±a) - (±b) = ?` (ubah ke penjumlahan)
   - 1d: Perkalian tanda — pola `(±a) × (±b) = ?`
   - 1e: Pembagian tanda — pola `(±a) ÷ (±b) = ?`
   - 1f: PEMDAS campuran — pola `a ± b × (c ± d) = ?`
-- [ ] `02-sifat-operasi-bilangan.js` (4 kompetensi)
-  - 2a: Komutatif — "Pilih operasi yang MELANGGAR sifat komutatif"
-  - 2b: Asosiatif — "Pilih operasi yang MELANGGAR sifat asosiatif"
+- [x] `02-sifat-operasi-bilangan.js` (4 kompetensi)
+  - 2a: Komutatif — pola isi-titik-titik `a op b = b op ...` (numerik, bukan pilihan ganda — lihat catatan di bawah)
+  - 2b: Asosiatif — pola isi-titik-titik `(a op b) op c = a op (b op ...)`
   - 2c: Distributif — "Selesaikan: a × (b ± c) = ?"
-  - 2d: Identitas & Invers — "Berapa a + ? = 0" atau "a × ? = a"
-- [ ] `03-kpk-dan-fpb.js` (4 kompetensi)
-  - 3a: Faktorisasi prima — "Faktorkan bilangan N"
+  - 2d: Identitas & Invers — "Berapa a + ? = 0", "a + ? = a", atau "a × ? = a"
+- [x] `03-kpk-dan-fpb.js` (4 kompetensi)
+  - 3a: Faktorisasi prima — "Faktor prima terbesar dari N = ?"
   - 3b: FPB — "FPB(a, b) = ?"
   - 3c: KPK — "KPK(a, b) = ?"
-  - 3d: Hubungan — "FPB(8,12) × KPK(8,12) = ? × ? = ?"
-- [ ] `04-operasi-pecahan.js` (6 kompetensi)
-  - 4a: Sederhanakan — "Sederhanakan a/b"
+  - 3d: Hubungan — "Jika FPB(a,b) = ..., maka KPK(a,b) = ?"
+- [x] `04-operasi-pecahan.js` (6 kompetensi)
+  - 4a: Sederhanakan — pola isi-titik-titik `a/b = .../sb` (sb sudah dalam bentuk sederhana)
   - 4b: Tambah/kurang sejenis — "a/c + b/c = ?"
   - 4c: Tambah/kurang tak sejenis — "a/b + c/d = ?"
   - 4d: Kali pecahan — "a/b × c/d = ?"
   - 4e: Bagi pecahan — "a/b ÷ c/d = ?"
-  - 4f: Campuran ↔ biasa — "Ubah X jadi pecahan biasa"
+  - 4f: Campuran → biasa — pola isi-titik-titik `whole a/b = .../b`
 
-**Deliverable**: 20 kompetensi pertama siap, 2000 soal bisa di-drill
+**Deliverable**: 20 kompetensi pertama siap, 2000 soal bisa di-drill ✅
+
+**Catatan desain**: 2a/2b awalnya direncanakan sebagai soal pilihan ganda konseptual ("pilih operasi yang melanggar sifat..."), tapi direformulasi jadi pola isi-titik-titik numerik supaya konsisten dengan engine drill yang cuma support input angka (belum ada UI pilihan ganda). Keputusan yang sama berlaku nanti untuk 08c (kasus khusus PLSV) kalau butuh jawaban non-angka.
 
 ---
 
