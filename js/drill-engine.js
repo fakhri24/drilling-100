@@ -21,6 +21,23 @@ function gcd(a, b) {
 }
 
 /**
+ * Format angka jadi string LaTeX dengan koma desimal (konvensi Indonesia)
+ * Contoh: 0.75 -> "0{,}75" (braces supaya KaTeX tidak kasih spasi list-separator)
+ */
+function fmtDecimal(n) {
+  return String(n).replace(".", "{,}");
+}
+
+/**
+ * Format angka jawaban untuk ditampilkan di feedback (bukan LaTeX) —
+ * bulatkan noise floating-point & pakai koma desimal
+ */
+function fmtJawabanDisplay(n) {
+  const rounded = Math.round(n * 10000) / 10000;
+  return String(rounded).replace(".", ",");
+}
+
+/**
  * Parse jawaban siswa ke angka.
  * Toleransi: koma sebagai desimal ("0,5"), dan pecahan ("1/2", "-3/4")
  * @returns {number|null}
@@ -197,7 +214,7 @@ class DrillEngine {
     } else {
       this.els.feedbackArea.innerHTML = `
         <div class="feedback salah">
-          ❌ Salah — Jawaban: <strong>${this.soalSekarang.jawaban}</strong>
+          ❌ Salah — Jawaban: <strong>${fmtJawabanDisplay(this.soalSekarang.jawaban)}</strong>
           <div class="penjelasan">${this.soalSekarang.penjelasan || ""}</div>
         </div>`;
     }

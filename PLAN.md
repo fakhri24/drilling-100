@@ -78,13 +78,18 @@
 
 ---
 
-### FASE 4: Materi 05-08 (Hari 5-7)
-- [ ] `05-operasi-konversi-desimal.js` (5 kompetensi)
-- [ ] `06-pengenalan-variabel.js` (3 kompetensi)
-- [ ] `07-manipulasi-aljabar-dasar.js` (5 kompetensi)
-- [ ] `08-plsv.js` (3 kompetensi)
+### FASE 4: Materi 05-08 (Hari 5-7) ✅
+- [x] `05-operasi-konversi-desimal.js` (5 kompetensi)
+- [x] `06-pengenalan-variabel.js` (2 kompetensi — 6b di-skip, lihat catatan)
+- [x] `07-manipulasi-aljabar-dasar.js` (5 kompetensi)
+- [x] `08-plsv.js` (3 kompetensi — 8c pakai kode numerik 0/1/2, lihat catatan)
 
-**Deliverable**: 36 kompetensi siap, 3600 soal
+**Deliverable**: 34 kompetensi siap (36 dikurangi 6b yang di-skip), 3400 soal ✅
+
+**Catatan desain**:
+- **6b (Menyusun Ekspresi dari Kalimat) di-skip.** Kompetensi ini butuh kalimat verbal + jawaban berupa ekspresi aljabar (bukan angka tunggal), bentrok dengan aturan "TIDAK ada soal cerita" dan dengan engine yang cuma menilai jawaban numerik. Perlu keputusan desain lebih lanjut (mis. UI pilihan ganda/expression-checker) sebelum bisa digarap.
+- **8c (Kasus Khusus PLSV)** direformulasi jadi klasifikasi numerik: siswa menjawab kode `0` (tidak ada solusi), `1` (satu solusi), atau `2` (tak terhingga solusi). Legenda kode selalu ditampilkan inline di soal.
+- Semua soal materi 05-08 sudah di-stress-test (2000 iterasi/kompetensi) untuk noise floating-point di angka desimal dan bug tanda-ganda pada template LaTeX — 0 masalah ditemukan.
 
 ---
 
