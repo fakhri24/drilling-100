@@ -93,13 +93,21 @@
 
 ---
 
-### FASE 5: Materi 09-12 (Hari 7-9)
-- [ ] `09-spldv.js` (2 kompetensi)
-- [ ] `10-persentase.js` (4 kompetensi)
-- [ ] `11-perbandingan-dan-skala.js` (4 kompetensi)
-- [ ] `12-pembulatan-dan-estimasi.js` (4 kompetensi)
+### FASE 5: Materi 09-12 (Hari 7-9) ✅
+- [x] `09-spldv.js` (2 kompetensi)
+- [x] `10-persentase.js` (4 kompetensi)
+- [x] `11-perbandingan-dan-skala.js` (4 kompetensi)
+- [x] `12-pembulatan-dan-estimasi.js` (4 kompetensi)
 
-**Deliverable**: ~50 kompetensi siap, 5000+ soal
+**Deliverable**: 48 kompetensi siap (semua materi 01-12 kecuali 6b), 4800 soal ✅
+
+**Catatan desain**: beberapa kompetensi direformulasi dari deskripsi asli di atas supaya cocok dengan engine numerik satu-jawaban & aturan "tanpa soal cerita":
+- **9a/9b (SPLDV)**: sistem 2 persamaan ditampilkan, tapi tiap soal cuma minta nilai x ATAU y (bukan pasangan (x,y) sekaligus).
+- **11c (Perbandingan Berbalik Nilai)**: direformulasi jadi pola "hasil kali tetap" (`a×b=c×...`) tanpa konteks cerita (pekerja/hari dll).
+- **11d (Skala Peta)** & **10d (Kenaikan/Penurunan Persentase)**: pakai instruksi abstrak langsung (bukan narasi/skenario) — dianggap masih dalam batas "tanpa soal cerita" karena tidak ada tokoh/plot, cuma terminologi matematika standar.
+- **12d (Estimasi Praktis)**: dijadikan "taksir jumlah beberapa bilangan" generik, tanpa konteks belanja spesifik seperti draf awal.
+
+**Bug ditemukan & diperbaiki**: di 12a & 12c, kata Indonesia yang di-interpolasi (mis. "puluhan", "terbaik") sempat taruh di luar blok `\text{}` LaTeX, bikin KaTeX render tiap huruf sebagai variabel matematika miring alih-alih teks biasa. Semua materi 09-12 sudah divalidasi render KaTeX-nya secara visual + stress test 3000 iterasi/kompetensi (0 masalah setelah fix).
 
 ---
 
