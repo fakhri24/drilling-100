@@ -47,7 +47,7 @@ const KOMPETENSI_04 = [
         b = randInt(1, c - 1);
       }
       const op = kurang ? "-" : "+";
-      const jawaban = (kurang ? a - b : a + b) / c;
+      const jawaban = Math.round(((kurang ? a - b : a + b) / c) * 100) / 100;
       return {
         pertanyaan: `\\frac{${a}}{${c}} ${op} \\frac{${b}}{${c}} = \\ldots`,
         jawaban: jawaban,
@@ -77,7 +77,7 @@ const KOMPETENSI_04 = [
       }
 
       const op = kurang ? "-" : "+";
-      const jawaban = kurang ? (a / b - c / d) : (a / b + c / d);
+      const jawaban = Math.round((kurang ? (a / b - c / d) : (a / b + c / d)) * 100) / 100;
       return {
         pertanyaan: `\\frac{${a}}{${b}} ${op} \\frac{${c}}{${d}} = \\ldots`,
         jawaban: jawaban,
@@ -101,7 +101,7 @@ const KOMPETENSI_04 = [
       const d = randInt(2, 10);
       return {
         pertanyaan: `\\frac{${a}}{${b}} \\times \\frac{${c}}{${d}} = \\ldots`,
-        jawaban: (a * c) / (b * d),
+        jawaban: Math.round(((a * c) / (b * d)) * 100) / 100,
         penjelasan: "Kali pembilang dengan pembilang, penyebut dengan penyebut"
       };
     }
@@ -122,7 +122,7 @@ const KOMPETENSI_04 = [
       const d = randInt(2, 10);
       return {
         pertanyaan: `\\frac{${a}}{${b}} \\div \\frac{${c}}{${d}} = \\ldots`,
-        jawaban: (a * d) / (b * c),
+        jawaban: Math.round(((a * d) / (b * c)) * 100) / 100,
         penjelasan: "Bagi pecahan = kali dengan kebalikan pecahan pembagi"
       };
     }

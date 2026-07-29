@@ -59,10 +59,12 @@ function parseJawaban(input) {
 }
 
 /**
- * Cek apakah jawaban benar (toleransi desimal)
+ * Cek apakah jawaban benar. Toleransi 0.006 supaya jawaban yang dibulatkan
+ * ke 2 desimal (untuk kompetensi dengan hasil desimal berulang) DAN jawaban
+ * pecahan eksak yang lebih presisi sama-sama diterima benar.
  */
 function cekJawaban(jawabanSiswa, jawabanBenar) {
-  return Math.abs(jawabanSiswa - jawabanBenar) < 0.001;
+  return Math.abs(jawabanSiswa - jawabanBenar) < 0.006;
 }
 
 /**
