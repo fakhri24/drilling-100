@@ -17,7 +17,7 @@
 
 ---
 
-### FASE 1: Auth & Navigation (Hari 1-2)
+### FASE 1: Auth & Navigation (Hari 1-2) ✅
 - [ ] `login.html` — UI login (Google button + email form)
 - [ ] `js/auth.js` — Auth state listener, redirect logic
 - [ ] `index.html` — Landing page, daftar 12 materi (grid card)
