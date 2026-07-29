@@ -154,6 +154,8 @@ Kunci: angka random tapi POLA SELALU SAMA, jadi setelah 100 soal siswa sudah haf
 - **Range angka kecil (1-50)**: tujuan drilling = penguasaan pola, bukan hitungan berat
 - Timer: opsional tapi bagus untuk tracking — jangan jadi tekanan utama
 - TIDAK ada soal cerita — semua hitungan murni berpola
+- **Rendering soal pakai KaTeX** (CDN, di `drill.html`): field `pertanyaan` di semua materi HARUS berupa string LaTeX murni (tanpa delimiter `$...$`), contoh: `` `${a} + ${b} = \\ldots` `` atau `` `\\frac{${a}}{${b}} + \\frac{${c}}{${d}} = \\ldots` ``. Engine render pakai `katex.render(..., {displayMode: true})`.
+- **Input jawaban tetap fleksibel** — `parseJawaban()` di `drill-engine.js` terima desimal (`0.5` / `0,5`) maupun pecahan (`1/2`, `-3/4`). Siswa TIDAK perlu input LaTeX.
 
 ## Future Features (Bukan Sekarang)
 
