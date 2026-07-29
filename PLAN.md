@@ -2,7 +2,7 @@
 
 ## Timeline & Fase Pengerjaan
 
-### FASE 0: Setup & Foundation (Hari 1)
+### FASE 0: Setup & Foundation (Hari 1) ✅
 - [ ] Buat GitHub repo `fakhri24/drilling-100` (public, MIT)
 - [ ] Inisialisasi Firebase project baru (`drilling-100`) untuk Auth + Firestore
 - [ ] Setup Firebase Auth (Google + Email/Password)
