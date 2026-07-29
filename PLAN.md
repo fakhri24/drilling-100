@@ -30,7 +30,7 @@
 
 ---
 
-### FASE 2: Drill Engine Core (Hari 2-3)
+### FASE 2: Drill Engine Core (Hari 2-3) ✅
 - [ ] `js/drill-engine.js` — Engine generik:
   - Terima array kompetensi, render soal satu per satu
   - Handle input jawaban (text input atau pilihan ganda)
