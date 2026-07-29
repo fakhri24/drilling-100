@@ -15,10 +15,10 @@ const KOMPETENSI_01 = [
       const a = randInt(1, 50);
       const b = randInt(1, 50);
       const sign = negatif ? -1 : 1;
-      const sa = negatif ? `(${a})` : `${a}`;
-      const sb = negatif ? `(${b})` : `${b}`;
+      const sa = negatif ? `(-${a})` : `${a}`;
+      const sb = negatif ? `(-${b})` : `${b}`;
       return {
-        pertanyaan: `${sa} + ${sb} = ...`,
+        pertanyaan: `${sa} + ${sb} = \\ldots`,
         jawaban: sign * (a + b),
         penjelasan: "Tanda sama → jumlahkan, tanda tetap"
       };
@@ -43,14 +43,14 @@ const KOMPETENSI_01 = [
       if (positifDulu) {
         jawaban = a - b;
         return {
-          pertanyaan: `${a} + (${b * -1}) = ...`,
+          pertanyaan: `${a} + (${b * -1}) = \\ldots`,
           jawaban: jawaban,
           penjelasan: "Tanda beda → kurangkan, ikuti tanda yang lebih besar"
         };
       } else {
         jawaban = b - a;
         return {
-          pertanyaan: `(${a * -1}) + ${b} = ...`,
+          pertanyaan: `(${a * -1}) + ${b} = \\ldots`,
           jawaban: jawaban,
           penjelasan: "Tanda beda → kurangkan, ikuti tanda yang lebih besar"
         };
@@ -72,7 +72,7 @@ const KOMPETENSI_01 = [
       const sa = a < 0 ? `(${a})` : `${a}`;
       const sb = b < 0 ? `(${b})` : `${b}`;
       return {
-        pertanyaan: `${sa} - ${sb} = ...`,
+        pertanyaan: `${sa} - ${sb} = \\ldots`,
         jawaban: a - b,
         penjelasan: "Ubah − jadi +, balik tanda bilangan setelah tanda kurang"
       };
@@ -96,7 +96,7 @@ const KOMPETENSI_01 = [
       const sb = negB ? `(${b * -1})` : `${b}`;
       const jawaban = (negA ? -a : a) * (negB ? -b : b);
       return {
-        pertanyaan: `${sa} × ${sb} = ...`,
+        pertanyaan: `${sa} \\times ${sb} = \\ldots`,
         jawaban: jawaban,
         penjelasan: "Sesama tanda → positif, beda tanda → negatif"
       };
@@ -122,7 +122,7 @@ const KOMPETENSI_01 = [
       const sb = negB ? `(${b * -1})` : `${b}`;
       const jawaban = negB ? -hasil : hasil;
       return {
-        pertanyaan: `${sa} ÷ ${sb} = ...`,
+        pertanyaan: `${sa} \\div ${sb} = \\ldots`,
         jawaban: jawaban,
         penjelasan: "Sesama tanda → positif, beda tanda → negatif"
       };
@@ -146,14 +146,14 @@ const KOMPETENSI_01 = [
         const a = randInt(2, 15);
         const b = randInt(2, 10);
         const c = randInt(2, 10);
-        pertanyaan = `${a} + ${b} × ${c} = ...`;
+        pertanyaan = `${a} + ${b} \\times ${c} = \\ldots`;
         jawaban = a + b * c;
       } else if (tipe === 2) {
         // a × (b + c)
         const a = randInt(2, 10);
         const b = randInt(2, 15);
         const c = randInt(2, 15);
-        pertanyaan = `${a} × (${b} + ${c}) = ...`;
+        pertanyaan = `${a} \\times (${b} + ${c}) = \\ldots`;
         jawaban = a * (b + c);
       } else {
         // a - b × c + d
@@ -161,7 +161,7 @@ const KOMPETENSI_01 = [
         const b = randInt(2, 8);
         const c = randInt(2, 8);
         const d = randInt(1, 15);
-        pertanyaan = `${a} - ${b} × ${c} + ${d} = ...`;
+        pertanyaan = `${a} - ${b} \\times ${c} + ${d} = \\ldots`;
         jawaban = a - b * c + d;
       }
 

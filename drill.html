@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Drilling — Drilling-100</title>
   <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -35,8 +37,8 @@
 
       <div class="soal-card">
         <div class="pertanyaan" id="pertanyaan">...</div>
-        <input type="text" id="jawaban-input" placeholder="Jawabanmu"
-               autocomplete="off" inputmode="numeric">
+        <input type="text" id="jawaban-input" placeholder="Jawabanmu (mis. 3, -2, 1/2, atau 0,5)"
+               autocomplete="off" inputmode="text">
         <div class="mt-16">
           <button class="btn btn-primary" id="btn-jawab" onclick="engine.submitJawaban()">Jawab</button>
           <button class="btn btn-primary" id="btn-next" onclick="engine.nextSoal()" style="display:none">Soal Berikutnya →</button>

@@ -9,12 +9,22 @@ function randInt(min, max) {
 }
 
 /**
- * Parse jawaban siswa ke angka (toleransi input "," sebagai desimal)
+ * Parse jawaban siswa ke angka.
+ * Toleransi: koma sebagai desimal ("0,5"), dan pecahan ("1/2", "-3/4")
  * @returns {number|null}
  */
 function parseJawaban(input) {
   if (!input || input.trim() === "") return null;
   const cleaned = input.trim().replace(",", ".");
+
+  if (cleaned.includes("/")) {
+    const [pembilang, penyebut] = cleaned.split("/");
+    const num = parseFloat(pembilang);
+    const denom = parseFloat(penyebut);
+    if (isNaN(num) || isNaN(denom) || denom === 0) return null;
+    return num / denom;
+  }
+
   const num = parseFloat(cleaned);
   return isNaN(num) ? null : num;
 }
@@ -116,7 +126,10 @@ class DrillEngine {
     this.soalSekarang = this.config.generateSoal();
     this.soalStartTime = Date.now();
 
-    this.els.pertanyaan.textContent = this.soalSekarang.pertanyaan;
+    katex.render(this.soalSekarang.pertanyaan, this.els.pertanyaan, {
+      throwOnError: false,
+      displayMode: true,
+    });
     this.els.jawabanInput.value = "";
     this.els.jawabanInput.disabled = false;
     this.els.jawabanInput.focus();
