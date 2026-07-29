@@ -94,7 +94,7 @@ auth.onAuthStateChanged(async (user) => {
 
   if (!user) {
     // Belum login → redirect ke login (kecuali di halaman login)
-    if (currentPage !== "login.html" && currentPage !== "") {
+    if (currentPage !== "login.html") {
       window.location.href = "login.html";
     }
     return;
