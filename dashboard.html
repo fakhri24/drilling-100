@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Drilling-100</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">📐 Drilling-100</a>
+    <div class="user-info" id="nav-user" style="display:none">
+      <span id="nav-username"></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="welcome" id="welcome" style="display:none">
+      <h1 id="welcome-text">Selamat datang!</h1>
+      <p class="subtitle">Siap latihan hari ini?</p>
+    </div>
+
+    <div class="loading" id="loading">Memuat...</div>
+
+    <div id="dashboard-content" style="display:none">
+      <!-- Statistik ringkas -->
+      <div class="card" id="stat-card">
+        <div class="card-title">📊 Statistik</div>
+        <div class="stat-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px">
+          <div class="stat-item" style="background:var(--bg); padding:12px; border-radius:8px; text-align:center">
+            <div class="stat-value" id="stat-total" style="font-size:1.3rem; font-weight:700">0</div>
+            <div class="stat-label" style="font-size:0.8rem; color:var(--text-secondary)">Soal Dikerjakan</div>
+          </div>
+          <div class="stat-item" style="background:var(--bg); padding:12px; border-radius:8px; text-align:center">
+            <div class="stat-value" id="stat-akurasi" style="font-size:1.3rem; font-weight:700">-</div>
+            <div class="stat-label" style="font-size:0.8rem; color:var(--text-secondary)">Akurasi Rata-rata</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daftar materi -->
+      <h2 style="font-size:1.1rem; margin:20px 0 12px">📚 Pilih Materi</h2>
+      <div class="materi-grid" id="materi-grid"></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/progres.js"></script>
+  <script>
+    const MATERI = [
+      { id: "01", emoji: "🧮", nama: "Operasi Aritmatika Dasar" },
+      { id: "02", emoji: "🔢", nama: "Sifat Operasi Bilangan" },
+      { id: "03", emoji: "🧩", nama: "KPK dan FPB" },
+      { id: "04", emoji: "🍰", nama: "Operasi Pecahan" },
+      { id: "05", emoji: "🔟", nama: "Operasi dan Konversi Desimal" },
+      { id: "06", emoji: "🔤", nama: "Pengenalan Variabel" },
+      { id: "07", emoji: "🧮", nama: "Manipulasi Aljabar Dasar" },
+      { id: "08", emoji: "⚖️", nama: "PLSV" },
+      { id: "09", emoji: "📐", nama: "SPLDV" },
+      { id: "10", emoji: "💯", nama: "Persentase" },
+      { id: "11", emoji: "📏", nama: "Perbandingan dan Skala" },
+      { id: "12", emoji: "🎯", nama: "Pembulatan dan Estimasi" },
+    ];
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return;
+
+      const loading = document.getElementById("loading");
+      const welcome = document.getElementById("welcome");
+      const welcomeText = document.getElementById("welcome-text");
+      const dashboardContent = document.getElementById("dashboard-content");
+      const navUser = document.getElementById("nav-user");
+      const navUsername = document.getElementById("nav-username");
+
+      // Ambil username
+      const username = await getUsername(user.uid);
+
+      // Tampilkan welcome
+      welcomeText.textContent = `Selamat datang, ${username || user.displayName}!`;
+      welcome.style.display = "block";
+      navUsername.textContent = username || user.displayName;
+      navUser.style.display = "flex";
+
+      // Ambil semua progres
+      const allProgres = await getAllProgres(user.uid);
+
+      // Hitung statistik
+      let totalSoal = 0;
+      let totalBenar = 0;
+      allProgres.forEach(p => {
+        if (p.jawaban) {
+          totalSoal += p.jawaban.length;
+          totalBenar += p.totalBenar || 0;
+        }
+      });
+
+      document.getElementById("stat-total").textContent = totalSoal;
+      document.getElementById("stat-akurasi").textContent = totalSoal > 0
+        ? Math.round((totalBenar / totalSoal) * 100) + "%" : "-";
+
+      // Render materi grid
+      const grid = document.getElementById("materi-grid");
+      MATERI.forEach(m => {
+        const card = document.createElement("a");
+        card.className = "materi-card";
+        card.href = `materi.html?id=${m.id}`;
+        card.innerHTML = `
+          <div class="emoji">${m.emoji}</div>
+          <div class="nama">${m.nama}</div>
+          <div class="progress-text">Klik untuk lihat kompetensi</div>
+          <div class="progress-bar"><div class="fill" style="width:0%"></div></div>
+        `;
+        grid.appendChild(card);
+      });
+
+      loading.style.display = "none";
+      dashboardContent.style.display = "block";
+    });
+  </script>
+</body>
+</html>

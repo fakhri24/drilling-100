@@ -1,0 +1,13 @@
+# Firebase config (local development)
+js/firebase-config.local.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Node
+node_modules/

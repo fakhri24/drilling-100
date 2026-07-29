@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drilling — Drilling-100</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">📐 Drilling-100</a>
+    <div class="user-info" id="nav-user" style="display:none">
+      <span id="nav-username"></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="loading" id="loading">Memuat...</div>
+
+    <!-- Drill Area (hidden until loaded) -->
+    <div id="drill-area" style="display:none">
+      <div class="drill-header">
+        <a href="index.html" style="font-size:0.9rem; color:var(--text-secondary)">← Kembali</a>
+        <div class="drill-counter" id="drill-counter">0 / 100</div>
+      </div>
+
+      <div class="drill-progress">
+        <div class="progress-bar">
+          <div class="fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="soal-card">
+        <div class="pertanyaan" id="pertanyaan">...</div>
+        <input type="text" id="jawaban-input" placeholder="Jawabanmu"
+               autocomplete="off" inputmode="numeric">
+        <div class="mt-16">
+          <button class="btn btn-primary" id="btn-jawab" onclick="submitJawaban()">Jawab</button>
+        </div>
+      </div>
+
+      <div id="feedback-area"></div>
+    </div>
+
+    <!-- Hasil Area (hidden until selesai) -->
+    <div id="hasil-area" style="display:none">
+      <div class="card">
+        <div class="hasil">
+          <div class="skor-besar" id="skor-besar">0</div>
+          <div class="skor-label">dari 100 soal benar</div>
+
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="stat-benar">0</div>
+              <div class="stat-label">Benar</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-salah">0</div>
+              <div class="stat-label">Salah</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-akurasi">0%</div>
+              <div class="stat-label">Akurasi</div>
+            </div>
+          </div>
+
+          <a href="index.html" class="btn btn-primary mt-16">Kembali ke Beranda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/progres.js"></script>
+  <script>
+    // Akan diisi oleh drill engine + materi file
+    // Untuk sekarang placeholder
+    let currentUser = null;
+    let currentKompetensi = null;
+    let soalIndex = 0;
+    let soalSekarang = null;
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return;
+      currentUser = user;
+
+      const username = await getUsername(user.uid);
+      const navUser = document.getElementById("nav-user");
+      const navUsername = document.getElementById("nav-username");
+      navUsername.textContent = username || user.displayName;
+      navUser.style.display = "flex";
+
+      // TODO: Load kompetensi dari URL param & generate soal
+      document.getElementById("loading").textContent = "Drill engine belum tersedia. Coming soon!";
+    });
+
+    function submitJawaban() {
+      // Placeholder — akan diimplementasi di FASE 2
+      console.log("Submit jawaban");
+    }
+  </script>
+</body>
+</html>

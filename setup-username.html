@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilih Username — Drilling-100</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="setup-container">
+    <h1>👋 Halo!</h1>
+    <p class="subtitle">Pilih username untuk akunmu.<br>Ini akan tampil saat kamu masuk.</p>
+
+    <div class="card" style="width:100%; max-width:400px">
+      <form id="username-form" onsubmit="handleUsernameSubmit(event)">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="misal: fakhri_24"
+                 pattern="[a-zA-Z0-9_]{3,20}" required
+                 title="3-20 karakter, huruf/angka/underscore">
+        </div>
+        <div class="error-text" id="error-msg" style="display:none"></div>
+        <div id="success-msg" style="display:none; color: var(--success); font-size:0.9rem; margin-bottom:12px"></div>
+        <button type="submit" class="btn btn-primary btn-full" id="btn-submit">Simpan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    async function handleUsernameSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById("username");
+      const errorMsg = document.getElementById("error-msg");
+      const successMsg = document.getElementById("success-msg");
+      const btn = document.getElementById("btn-submit");
+      const username = input.value.trim();
+
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      // Validasi format
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        errorMsg.textContent = "Username harus 3-20 karakter (huruf, angka, underscore)";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Mengecek...";
+
+      try {
+        const available = await isUsernameAvailable(username);
+
+        if (!available) {
+          errorMsg.textContent = "Username sudah dipakai, pilih yang lain";
+          errorMsg.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Simpan";
+          return;
+        }
+
+        const user = firebase.auth().currentUser;
+        await saveUsername(user.uid, username);
+
+        successMsg.textContent = "Username tersimpan! Mengalihkan...";
+        successMsg.style.display = "block";
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      } catch (err) {
+        errorMsg.textContent = "Terjadi kesalahan, coba lagi";
+        errorMsg.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Simpan";
+      }
+    }
+  </script>
+</body>
+</html>

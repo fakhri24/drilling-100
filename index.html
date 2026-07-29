@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drilling-100 — Latihan Numerasi X</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">📐 Drilling-100</a>
+    <div class="user-info" id="nav-user" style="display:none">
+      <span id="nav-username"></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="welcome">
+      <h1>📐 Drilling-100</h1>
+      <p class="subtitle">Latihan 100 soal per kompetensi — numerasi kelas X</p>
+    </div>
+
+    <div class="loading" id="loading">Memuat...</div>
+
+    <div class="materi-grid" id="materi-grid" style="display:none">
+      <!-- Akan diisi oleh JS -->
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Daftar 12 materi
+    const MATERI = [
+      { id: "01", emoji: "🧮", nama: "Operasi Aritmatika Dasar" },
+      { id: "02", emoji: "🔢", nama: "Sifat Operasi Bilangan" },
+      { id: "03", emoji: "🧩", nama: "KPK dan FPB" },
+      { id: "04", emoji: "🍰", nama: "Operasi Pecahan" },
+      { id: "05", emoji: "🔟", nama: "Operasi dan Konversi Desimal" },
+      { id: "06", emoji: "🔤", nama: "Pengenalan Variabel" },
+      { id: "07", emoji: "🧮", nama: "Manipulasi Aljabar Dasar" },
+      { id: "08", emoji: "⚖️", nama: "PLSV" },
+      { id: "09", emoji: "📐", nama: "SPLDV" },
+      { id: "10", emoji: "💯", nama: "Persentase" },
+      { id: "11", emoji: "📏", nama: "Perbandingan dan Skala" },
+      { id: "12", emoji: "🎯", nama: "Pembulatan dan Estimasi" },
+    ];
+
+    // Render materi grid
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return;
+
+      const grid = document.getElementById("materi-grid");
+      const loading = document.getElementById("loading");
+      const navUser = document.getElementById("nav-user");
+      const navUsername = document.getElementById("nav-username");
+
+      // Tampilkan username di navbar
+      const username = await getUsername(user.uid);
+      navUsername.textContent = username || user.displayName;
+      navUser.style.display = "flex";
+
+      // Render cards
+      MATERI.forEach(m => {
+        const card = document.createElement("a");
+        card.className = "materi-card";
+        card.href = `materi.html?id=${m.id}`;
+        card.innerHTML = `
+          <div class="emoji">${m.emoji}</div>
+          <div class="nama">${m.nama}</div>
+          <div class="progress-text">Klik untuk lihat kompetensi</div>
+          <div class="progress-bar"><div class="fill" style="width:0%"></div></div>
+        `;
+        grid.appendChild(card);
+      });
+
+      loading.style.display = "none";
+      grid.style.display = "grid";
+    });
+  </script>
+</body>
+</html>

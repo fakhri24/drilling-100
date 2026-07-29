@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materi — Drilling-100</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">📐 Drilling-100</a>
+    <div class="user-info" id="nav-user" style="display:none">
+      <span id="nav-username"></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="loading" id="loading">Memuat...</div>
+
+    <div id="materi-content" style="display:none">
+      <a href="index.html" style="font-size:0.9rem; color:var(--text-secondary)">← Semua Materi</a>
+      <h1 id="materi-judul" style="margin:12px 0"></h1>
+      <p class="subtitle mb-16" id="materi-desc">Pilih kompetensi untuk mulai drilling 100 soal</p>
+
+      <div class="kompetensi-list" id="kompetensi-list"></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/progres.js"></script>
+  <script>
+    // Daftar kompetensi per materi
+    const KOMPETENSI = {
+      "01": [
+        { id: "01a", nama: "Penjumlahan Tanda Sama" },
+        { id: "01b", nama: "Penjumlahan Tanda Beda" },
+        { id: "01c", nama: "Pengurangan Bilangan Bulat" },
+        { id: "01d", nama: "Perkalian Bilangan Bulat" },
+        { id: "01e", nama: "Pembagian Bilangan Bulat" },
+        { id: "01f", nama: "Urutan Operasi (PEMDAS)" },
+      ],
+      "02": [
+        { id: "02a", nama: "Sifat Komutatif" },
+        { id: "02b", nama: "Sifat Asosiatif" },
+        { id: "02c", nama: "Sifat Distributif" },
+        { id: "02d", nama: "Identitas & Invers" },
+      ],
+      "03": [
+        { id: "03a", nama: "Faktorisasi Prima" },
+        { id: "03b", nama: "Menghitung FPB" },
+        { id: "03c", nama: "Menghitung KPK" },
+        { id: "03d", nama: "Hubungan FPB × KPK" },
+      ],
+      "04": [
+        { id: "04a", nama: "Menyederhanakan Pecahan" },
+        { id: "04b", nama: "Tambah/Kurang Pecahan Sejenis" },
+        { id: "04c", nama: "Tambah/Kurang Pecahan Tak Sejenis" },
+        { id: "04d", nama: "Perkalian Pecahan" },
+        { id: "04e", nama: "Pembagian Pecahan" },
+        { id: "04f", nama: "Konversi Campuran ↔ Biasa" },
+      ],
+      "05": [
+        { id: "05a", nama: "Pecahan → Desimal" },
+        { id: "05b", nama: "Desimal → Pecahan" },
+        { id: "05c", nama: "Tambah/Kurang Desimal" },
+        { id: "05d", nama: "Perkalian Desimal" },
+        { id: "05e", nama: "Pembagian Desimal" },
+      ],
+      "06": [
+        { id: "06a", nama: "Identifikasi Unsur Aljabar" },
+        { id: "06b", nama: "Menyusun Ekspresi dari Kalimat" },
+        { id: "06c", nama: "Substitusi Nilai Variabel" },
+      ],
+      "07": [
+        { id: "07a", nama: "Menggabungkan Suku Sejenis" },
+        { id: "07b", nama: "Tambah/Kurang Bentuk Aljabar" },
+        { id: "07c", nama: "Sifat Distributif Aljabar" },
+        { id: "07d", nama: "Faktorisasi" },
+        { id: "07e", nama: "Perkalian Suku dengan Suku" },
+      ],
+      "08": [
+        { id: "08a", nama: "PLSV Sederhana (ax+b=c)" },
+        { id: "08b", nama: "PLSV Variabel di Kedua Ruas" },
+        { id: "08c", nama: "Kasus Khusus PLSV" },
+      ],
+      "09": [
+        { id: "09a", nama: "Metode Substitusi" },
+        { id: "09b", nama: "Metode Eliminasi" },
+      ],
+      "10": [
+        { id: "10a", nama: "Konversi Persen ↔ Pecahan ↔ Desimal" },
+        { id: "10b", nama: "Menghitung a% dari Nilai" },
+        { id: "10c", nama: "Persentase Bagian dari Total" },
+        { id: "10d", nama: "Kenaikan & Penurunan Persentase" },
+      ],
+      "11": [
+        { id: "11a", nama: "Menyederhanakan Perbandingan" },
+        { id: "11b", nama: "Perbandingan Senilai" },
+        { id: "11c", nama: "Perbandingan Berbalik Nilai" },
+        { id: "11d", nama: "Skala Peta" },
+      ],
+      "12": [
+        { id: "12a", nama: "Pembulatan Bilangan Bulat" },
+        { id: "12b", nama: "Pembulatan Desimal" },
+        { id: "12c", nama: "Taksiran Hasil Operasi" },
+        { id: "12d", nama: "Estimasi Praktis" },
+      ],
+    };
+
+    const MATERI_INFO = {
+      "01": { emoji: "🧮", nama: "Operasi Aritmatika Dasar" },
+      "02": { emoji: "🔢", nama: "Sifat Operasi Bilangan" },
+      "03": { emoji: "🧩", nama: "KPK dan FPB" },
+      "04": { emoji: "🍰", nama: "Operasi Pecahan" },
+      "05": { emoji: "🔟", nama: "Operasi dan Konversi Desimal" },
+      "06": { emoji: "🔤", nama: "Pengenalan Variabel" },
+      "07": { emoji: "🧮", nama: "Manipulasi Aljabar Dasar" },
+      "08": { emoji: "⚖️", nama: "PLSV" },
+      "09": { emoji: "📐", nama: "SPLDV" },
+      "10": { emoji: "💯", nama: "Persentase" },
+      "11": { emoji: "📏", nama: "Perbandingan dan Skala" },
+      "12": { emoji: "🎯", nama: "Pembulatan dan Estimasi" },
+    };
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return;
+
+      const username = await getUsername(user.uid);
+      const navUser = document.getElementById("nav-user");
+      const navUsername = document.getElementById("nav-username");
+      navUsername.textContent = username || user.displayName;
+      navUser.style.display = "flex";
+
+      // Ambil materiId dari URL
+      const params = new URLSearchParams(window.location.search);
+      const materiId = params.get("id");
+
+      if (!materiId || !KOMPETENSI[materiId]) {
+        document.getElementById("loading").textContent = "Materi tidak ditemukan";
+        return;
+      }
+
+      const info = MATERI_INFO[materiId];
+      const kompetensi = KOMPETENSI[materiId];
+
+      document.getElementById("materi-judul").textContent = `${info.emoji} ${info.nama}`;
+
+      // Ambil progres siswa
+      const allProgres = await getAllProgres(user.uid);
+
+      // Render kompetensi list
+      const list = document.getElementById("kompetensi-list");
+      kompetensi.forEach(k => {
+        const progres = allProgres.get(k.id);
+        let statusClass = "belum";
+        let statusText = "Belum";
+
+        if (progres) {
+          if (progres.selesai) {
+            statusClass = "selesai";
+            statusText = `${progres.totalBenar}/100`;
+          } else {
+            statusClass = "sedang";
+            statusText = `${progres.jawaban ? progres.jawaban.length : 0}/100`;
+          }
+        }
+
+        const item = document.createElement("a");
+        item.className = "kompetensi-item";
+        item.href = `drill.html?kompetensi=${k.id}`;
+        item.innerHTML = `
+          <span class="label">${k.nama}</span>
+          <span class="status ${statusClass}">${statusText}</span>
+        `;
+        list.appendChild(item);
+      });
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("materi-content").style.display = "block";
+    });
+  </script>
+</body>
+</html>
