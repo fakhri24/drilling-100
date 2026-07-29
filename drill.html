@@ -121,9 +121,28 @@
     registerMateri(KOMPETENSI_12);
 
     let engine = null;
+    let initialized = false;
+
+    // Keyboard: Enter = Jawab / Next. Didaftarkan sekali saja di top level —
+    // auth.onAuthStateChanged bisa terpanggil lebih dari sekali, jadi kalau
+    // listener ini didaftarkan di dalamnya, bisa terpasang dobel dan
+    // menyebabkan satu Enter memicu submitJawaban() + nextSoal() sekaligus.
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || !engine) return;
+      const btnJawab = document.getElementById("btn-jawab");
+      const btnNext = document.getElementById("btn-next");
+      if (btnNext.style.display !== "none") {
+        e.preventDefault();
+        engine.nextSoal();
+      } else if (btnJawab.style.display !== "none") {
+        e.preventDefault();
+        engine.submitJawaban();
+      }
+    });
 
     auth.onAuthStateChanged(async (user) => {
-      if (!user) return;
+      if (!user || initialized) return;
+      initialized = true;
 
       const username = await getUsername(user.uid);
       const navUser = document.getElementById("nav-user");
@@ -144,20 +163,6 @@
       // Init engine
       const config = REGISTRY[kompetensiId];
       engine = new DrillEngine(config);
-
-      // Keyboard: Enter = Jawab / Next
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          const btnJawab = document.getElementById("btn-jawab");
-          const btnNext = document.getElementById("btn-next");
-          if (btnNext.style.display !== "none") {
-            engine.nextSoal();
-          } else if (btnJawab.style.display !== "none") {
-            engine.submitJawaban();
-          }
-        }
-      });
-
       await engine.init(user);
     });
   </script>

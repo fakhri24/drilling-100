@@ -225,7 +225,10 @@ class DrillEngine {
     this.els.jawabanInput.disabled = true;
     this.els.btnJawab.style.display = "none";
     this.els.btnNext.style.display = "inline-block";
-    this.els.btnNext.focus();
+    // Tunda focus() ke tick berikutnya supaya tidak "menyatu" dengan event
+    // Enter yang sedang diproses (beberapa browser bisa menganggap Enter
+    // yang sama langsung mengklik tombol yang baru saja dapat fokus)
+    setTimeout(() => this.els.btnNext.focus(), 0);
 
     // Auto-save ke Firestore
     await saveJawaban(this.user.uid, this.config.kompetensiId, this.soalIndex - 1, data);
