@@ -73,7 +73,7 @@ function cekJawaban(jawabanSiswa, jawabanBenar) {
 class DrillEngine {
   /**
    * @param {object} config
-   * @param {string} config.kompetensiId - e.g. "01a"
+   * @param {string} config.id - kompetensi id, e.g. "01a"
    * @param {string} config.nama - display name
    * @param {string} config.deskripsi - short description
    * @param {number} config.totalSoal - default 100
@@ -122,7 +122,7 @@ class DrillEngine {
     }
 
     // Load existing progres from Firestore
-    const progres = await getProgres(user.uid, this.config.kompetensiId);
+    const progres = await getProgres(user.uid, this.config.id);
 
     if (progres && progres.jawaban) {
       this.jawabanList = progres.jawaban;
@@ -242,7 +242,7 @@ class DrillEngine {
     // pernah tersimpan. Sekarang kalau gagal, tampilkan peringatan supaya
     // siswa tahu progresnya belum aman.
     try {
-      await saveJawaban(this.user.uid, this.config.kompetensiId, this.soalIndex - 1, data);
+      await saveJawaban(this.user.uid, this.config.id, this.soalIndex - 1, data);
     } catch (err) {
       console.error("Gagal simpan progres ke Firestore:", err);
       this.els.feedbackArea.innerHTML += `
