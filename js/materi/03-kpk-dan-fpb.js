@@ -13,10 +13,10 @@ const KOMPETENSI_03 = [
     generateSoal() {
       // Jawaban (faktor prima terbesar) dipilih dari pool berbobot supaya
       // prima kecil (2,3,5,7) jauh lebih sering muncul daripada prima besar
-      // (11-19) — siswa paling terbiasa dengan yang kecil, kadang sampai 19
-      // tapi nilainya tidak pernah terlalu besar.
-      const primaKecil = [2, 3, 5, 7, 11, 13, 17, 19];
-      const bobotPool = [2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7, 11, 11, 13, 13, 17, 19];
+      // (11,13) — siswa paling terbiasa dengan yang kecil, kadang sampai 13
+      // tapi nilainya tidak pernah terlalu besar (maks < 15).
+      const primaKecil = [2, 3, 5, 7, 11, 13];
+      const bobotPool = [2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7, 11, 11, 13, 13];
       const terbesar = bobotPool[randInt(0, bobotPool.length - 1)];
       // Faktor kedua: prima apa saja yang <= terbesar, supaya "terbesar"
       // benar-benar jadi faktor prima terbesar dari n
