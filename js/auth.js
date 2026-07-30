@@ -58,24 +58,27 @@ async function saveUserProfile(user) {
 
 /**
  * Cek ketersediaan username (harus unik)
+ * Pakai collection terpisah "usernames" (doc id = username) supaya rules
+ * Firestore bisa tetap ketat "users/{uid} cuma bisa dibaca pemiliknya
+ * sendiri" — collection registry ini cuma simpan uid, bukan data pribadi.
  * @param {string} username
  * @returns {Promise<boolean>} true jika tersedia
  */
 async function isUsernameAvailable(username) {
-  const snapshot = await db.collection("users")
-    .where("username", "==", username.toLowerCase().trim())
-    .limit(1)
-    .get();
-  return snapshot.empty;
+  const doc = await db.collection("usernames").doc(username.toLowerCase().trim()).get();
+  return !doc.exists;
 }
 
 /**
- * Simpan username yang dipilih siswa
+ * Simpan username yang dipilih siswa — update profil + daftarkan di
+ * registry "usernames" sekaligus (batch, supaya konsisten)
  */
 async function saveUsername(uid, username) {
-  await db.collection("users").doc(uid).update({
-    username: username.toLowerCase().trim()
-  });
+  const clean = username.toLowerCase().trim();
+  const batch = db.batch();
+  batch.update(db.collection("users").doc(uid), { username: clean });
+  batch.set(db.collection("usernames").doc(clean), { uid });
+  await batch.commit();
 }
 
 /**

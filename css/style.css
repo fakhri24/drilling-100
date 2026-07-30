@@ -384,6 +384,16 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 20px;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 400px) {
+  .soal-card .pertanyaan {
+    font-size: 1.2rem;
+  }
 }
 
 @keyframes fadeSlideIn {

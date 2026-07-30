@@ -1,0 +1,33 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Profil siswa + subcollection progres — cuma bisa dibaca/ditulis
+    // oleh pemiliknya sendiri.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /progres/{progresId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Registry username — dipakai untuk cek keunikan username saat setup
+    // akun. Cuma simpan { uid }, bukan data pribadi, jadi aman dibaca
+    // semua user yang login. Sekali diklaim, tidak bisa diubah/dihapus
+    // dari client (mencegah orang lain merebut/mengubah username orang).
+    match /usernames/{username} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(["uid"]);
+      allow update, delete: if false;
+    }
+
+    // Default: tolak semua akses lain
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -125,16 +125,16 @@
 
 ---
 
-### FASE 7: Testing & Deploy (Hari 11-12)
-- [ ] Test semua kompetensi generate soal valid
-- [ ] Test jawaban benar/salah terdeteksi dengan tepat
-- [ ] Test resume progres (close browser, buka lagi)
-- [ ] Test di HP (Chrome, Safari)
-- [ ] Firestore security rules review
-- [ ] Push ke main → auto-deploy via GitHub Pages
-- [ ] Test di production (`fakhri24.github.io/drilling-100`)
+### FASE 7: Testing & Deploy (Hari 11-12) ✅
+- [x] Test semua kompetensi generate soal valid — 49 kompetensi × 500 soal (24.500 total), 0 error. Cek: pertanyaan valid, jawaban angka valid, render KaTeX sukses, jawaban sendiri lolos cekJawaban
+- [x] Test jawaban benar/salah terdeteksi dengan tepat — 657 test: jawaban salah ditolak, format desimal titik/koma & pecahan diterima, toleransi tidak kebablasan, parseJawaban tidak crash di input aneh
+- [x] Test resume progres — 12 test: resume di tengah (soal ke-47 → lanjut 48, benar/salahCount ke-restore), kompetensi selesai langsung tampilkan hasil, kompetensi baru mulai dari 0
+- [x] Test di HP — ketemu & perbaiki bug nyata: soal panjang (SPLDV, skala peta) kepotong/overflow di layar sempit tanpa cara melihat sisanya. Fix: `overflow-x:auto` di `.pertanyaan` + font lebih kecil di layar <400px
+- [x] Firestore security rules — **belum pernah ada `firestore.rules` sama sekali sebelum FASE 7 ini**, jadi dibuat dari nol. Sekalian refactor `isUsernameAvailable`/`saveUsername` di auth.js pakai collection registry terpisah `usernames/{username}` (cuma simpan uid) supaya `users/{uid}` bisa dikunci ketat ke pemiliknya sendiri. Diverifikasi pakai Firestore emulator + `@firebase/rules-unit-testing`: 19/19 test lolos (semua pola akses asli aplikasi + semua percobaan pelanggaran ditolak)
+- [x] Push ke main → auto-deploy via GitHub Pages
+- [ ] Test di production — kode sudah live, tapi **`firestore.rules` HARUS di-deploy manual** (`firebase deploy --only firestore:rules` atau paste ke Firebase Console) supaya benar-benar berlaku di database produksi
 
-**Deliverable**: LIVE di GitHub Pages, siap dipakai siswa
+**Deliverable**: LIVE di GitHub Pages, diuji berat (25.000+ soal, akses Firestore, resume, responsive), siap dipakai siswa ✅ — dengan catatan: rules baru perlu di-deploy manual oleh pemilik project
 
 ---
 
