@@ -1,7 +1,10 @@
 // 06-pengenalan-variabel.js
-// 2 kompetensi kecil — Pengenalan Variabel
-// (6b "Menyusun Ekspresi dari Kalimat" di-skip: butuh jawaban ekspresi/soal
-// cerita, tidak cocok dengan engine numerik & aturan "tanpa soal cerita")
+// 3 kompetensi kecil — Pengenalan Variabel
+// 6b "Menyusun Ekspresi dari Kalimat" sempat di-skip karena butuh jawaban
+// ekspresi (bukan angka tunggal) & tabrakan aturan "tanpa soal cerita".
+// Diselesaikan dengan tipeJawaban "pilihan-ganda": kalimat matematis pendek
+// (bukan soal cerita naratif) diterjemahkan ke ekspresi aljabar, siswa
+// pilih dari 5 opsi.
 
 const KOMPETENSI_06 = [
   // ─────────────────────────────────────────────
@@ -30,6 +33,69 @@ const KOMPETENSI_06 = [
           penjelasan: "Konstanta = suku tanpa variabel"
         };
       }
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // 6b. Menyusun Ekspresi dari Kalimat
+  // ─────────────────────────────────────────────
+  {
+    id: "06b",
+    nama: "Menyusun Ekspresi dari Kalimat",
+    deskripsi: "Kata kunci: jumlah/tambah → +, kurang/dikurangi → −, kali → ×, bagi → ÷. Perhatikan urutan sesuai kalimat",
+    totalSoal: 100,
+    tipeJawaban: "pilihan-ganda",
+    generateSoal() {
+      const a = randInt(2, 12);
+      const b = randInt(1, 30);
+      const pola = randInt(1, 7);
+
+      let teks, benar, salah;
+
+      switch (pola) {
+        case 1:
+          teks = `\\text{Jumlah suatu bilangan } x \\text{ dengan } ${b}`;
+          benar = `x+${b}`;
+          salah = [`x-${b}`, `${b}-x`, `${b}x`, `\\frac{x}{${b}}`];
+          break;
+        case 2:
+          teks = `\\text{Suatu bilangan } x \\text{ dikurangi } ${b}`;
+          benar = `x-${b}`;
+          salah = [`${b}-x`, `x+${b}`, `${b}x`, `\\frac{x}{${b}}`];
+          break;
+        case 3:
+          teks = `${b} \\text{ dikurangi suatu bilangan } x`;
+          benar = `${b}-x`;
+          salah = [`x-${b}`, `x+${b}`, `${b}x`, `\\frac{${b}}{x}`];
+          break;
+        case 4:
+          teks = `\\text{Hasil kali } ${a} \\text{ dengan suatu bilangan } x`;
+          benar = `${a}x`;
+          salah = [`x+${a}`, `x-${a}`, `\\frac{x}{${a}}`, `${a}+x`];
+          break;
+        case 5:
+          teks = `\\text{Suatu bilangan } x \\text{ dibagi } ${a}`;
+          benar = `\\frac{x}{${a}}`;
+          salah = [`\\frac{${a}}{x}`, `${a}x`, `x-${a}`, `x+${a}`];
+          break;
+        case 6:
+          teks = `${a} \\text{ kali suatu bilangan } x\\text{, ditambah } ${b}`;
+          benar = `${a}x+${b}`;
+          salah = [`${a}x-${b}`, `${a}(x+${b})`, `x+${a}+${b}`, `${a}+${b}x`];
+          break;
+        default:
+          teks = `${a} \\text{ kali suatu bilangan } x\\text{, dikurangi } ${b}`;
+          benar = `${a}x-${b}`;
+          salah = [`${a}x+${b}`, `${b}-${a}x`, `${a}(x-${b})`, `x-${a}-${b}`];
+          break;
+      }
+
+      return {
+        pertanyaan: `${teks}\\text{, ditulis sebagai ekspresi aljabar} = \\ldots`,
+        jawaban: benar,
+        pilihan: shuffleArray([benar, ...salah]),
+        penjelasan: "Kata kunci: jumlah/tambah → +, kurang/dikurangi → −, kali → ×, bagi → ÷. Perhatikan urutan angka dan variabel sesuai kalimat"
+      };
     }
   },
 

@@ -422,6 +422,44 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   border-color: var(--primary);
 }
 
+.pilihan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-pilihan {
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
+  padding: 14px 10px;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn-pilihan:hover:not(:disabled) {
+  border-color: var(--primary);
+}
+
+.btn-pilihan:disabled {
+  cursor: default;
+}
+
+.btn-pilihan.pilihan-benar {
+  border-color: var(--success);
+  background: var(--success-bg);
+  color: #1a8a7e;
+}
+
+.btn-pilihan.pilihan-salah {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
 /* Feedback */
 .feedback {
   padding: 16px;

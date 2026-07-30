@@ -9,6 +9,19 @@ function randInt(min, max) {
 }
 
 /**
+ * Acak urutan array (Fisher-Yates) — dipakai untuk mengacak posisi
+ * pilihan jawaban pada kompetensi bertipe "pilihan-ganda"
+ */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
  * FPB (greatest common divisor) dua bilangan bulat positif
  */
 function gcd(a, b) {
@@ -114,6 +127,7 @@ class DrillEngine {
       progressFill: document.getElementById("progress-fill"),
       feedbackArea: document.getElementById("feedback-area"),
       judulKompetensi: document.getElementById("judul-kompetensi"),
+      pilihanArea: document.getElementById("pilihan-area"),
     };
 
     // Set judul
@@ -146,8 +160,10 @@ class DrillEngine {
     this.els.loading.style.display = "none";
     this.els.drillArea.style.display = "block";
 
-    // Focus input
-    this.els.jawabanInput.focus();
+    // Focus input (kompetensi pilihan-ganda tidak punya input teks)
+    if (this.config.tipeJawaban !== "pilihan-ganda") {
+      this.els.jawabanInput.focus();
+    }
   }
 
   /**
@@ -167,16 +183,69 @@ class DrillEngine {
     this.els.pertanyaan.classList.remove("soal-animate");
     void this.els.pertanyaan.offsetWidth;
     this.els.pertanyaan.classList.add("soal-animate");
-    this.els.jawabanInput.value = "";
-    this.els.jawabanInput.disabled = false;
-    this.els.jawabanInput.focus();
-    this.els.btnJawab.style.display = "inline-block";
     this.els.btnNext.style.display = "none";
     this.els.feedbackArea.innerHTML = "";
+
+    if (this.config.tipeJawaban === "pilihan-ganda") {
+      this.renderPilihanGanda();
+    } else {
+      this.renderInputNumerik();
+    }
 
     // Update counter & progress bar
     this.els.drillCounter.textContent = `${this.soalIndex} / ${this.totalSoal}`;
     this.els.progressFill.style.width = `${(this.soalIndex / this.totalSoal) * 100}%`;
+  }
+
+  /**
+   * Render mode input angka (default) — sembunyikan area pilihan
+   */
+  renderInputNumerik() {
+    this.els.pilihanArea.style.display = "none";
+    this.els.pilihanArea.innerHTML = "";
+    this.els.jawabanInput.style.display = "block";
+    this.els.jawabanInput.value = "";
+    this.els.jawabanInput.disabled = false;
+    this.els.jawabanInput.focus();
+    this.els.btnJawab.style.display = "inline-block";
+  }
+
+  /**
+   * Render mode pilihan-ganda — sembunyikan input teks, buat tombol
+   * dari config.generateSoal().pilihan (array string LaTeX)
+   */
+  renderPilihanGanda() {
+    this.els.jawabanInput.style.display = "none";
+    this.els.btnJawab.style.display = "none";
+    this.els.pilihanArea.style.display = "grid";
+    this.els.pilihanArea.innerHTML = "";
+
+    this.soalSekarang.pilihan.forEach((opsi) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-pilihan";
+      btn.dataset.value = opsi;
+      katex.render(opsi, btn, { throwOnError: false, displayMode: false });
+      btn.addEventListener("click", () => this.pilihJawaban(opsi, btn));
+      this.els.pilihanArea.appendChild(btn);
+    });
+  }
+
+  /**
+   * Handle klik tombol pilihan — grading berbasis kecocokan string,
+   * bukan angka (dipakai kompetensi seperti 6b yang jawabannya ekspresi)
+   */
+  async pilihJawaban(opsi, btnEl) {
+    const semuaBtn = Array.from(this.els.pilihanArea.querySelectorAll("button"));
+    semuaBtn.forEach((b) => (b.disabled = true));
+
+    const benar = opsi === this.soalSekarang.jawaban;
+    semuaBtn.forEach((b) => {
+      if (b.dataset.value === this.soalSekarang.jawaban) b.classList.add("pilihan-benar");
+    });
+    if (!benar) btnEl.classList.add("pilihan-salah");
+
+    await this.finalizeJawaban(opsi, benar);
   }
 
   /**
@@ -195,6 +264,16 @@ class DrillEngine {
     }
 
     const benar = cekJawaban(jawabanSiswa, this.soalSekarang.jawaban);
+    this.els.jawabanInput.disabled = true;
+    await this.finalizeJawaban(jawabanSiswa, benar);
+  }
+
+  /**
+   * Grading sudah selesai (numerik atau pilihan-ganda) — simpan jawaban,
+   * tampilkan feedback, dan cek penyelesaian. Dipakai bersama oleh
+   * submitJawaban() (mode input angka) & pilihJawaban() (mode pilihan-ganda).
+   */
+  async finalizeJawaban(jawabanSiswa, benar) {
     const waktuMs = Date.now() - this.soalStartTime;
 
     // Update counters
@@ -212,11 +291,19 @@ class DrillEngine {
     this.jawabanList.push(data);
     this.soalIndex++;
 
-    // Show feedback
+    // Show feedback. Untuk pilihan-ganda, jawaban yang benar sudah
+    // di-highlight hijau di tombolnya sendiri, jadi tidak perlu diulang di sini.
+    const isPilihanGanda = this.config.tipeJawaban === "pilihan-ganda";
     if (benar) {
       this.els.feedbackArea.innerHTML = `
         <div class="feedback benar">
           ✅ Benar!
+          <div class="penjelasan">${this.soalSekarang.penjelasan || ""}</div>
+        </div>`;
+    } else if (isPilihanGanda) {
+      this.els.feedbackArea.innerHTML = `
+        <div class="feedback salah">
+          ❌ Salah
           <div class="penjelasan">${this.soalSekarang.penjelasan || ""}</div>
         </div>`;
     } else {
@@ -227,8 +314,7 @@ class DrillEngine {
         </div>`;
     }
 
-    // Disable input, show next button
-    this.els.jawabanInput.disabled = true;
+    // Show next button
     this.els.btnJawab.style.display = "none";
     this.els.btnNext.style.display = "inline-block";
     // Tunda focus() ke tick berikutnya supaya tidak "menyatu" dengan event
