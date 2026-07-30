@@ -161,6 +161,12 @@ class DrillEngine {
       throwOnError: false,
       displayMode: true,
     });
+    // Re-trigger animasi fade-in: elemen pertanyaan di-reuse tiap soal
+    // (bukan dibuat baru), jadi class-nya perlu dilepas & dipasang lagi
+    // dengan reflow paksa di antaranya
+    this.els.pertanyaan.classList.remove("soal-animate");
+    void this.els.pertanyaan.offsetWidth;
+    this.els.pertanyaan.classList.add("soal-animate");
     this.els.jawabanInput.value = "";
     this.els.jawabanInput.disabled = false;
     this.els.jawabanInput.focus();

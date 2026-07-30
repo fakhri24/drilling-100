@@ -7,13 +7,17 @@
   <link rel="stylesheet" href="css/style.css?v=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="js/theme.js?v=1"></script>
 </head>
 <body>
   <nav class="navbar">
     <a href="index.html" class="brand">📐 Drilling-100</a>
-    <div class="user-info" id="nav-user" style="display:none">
-      <span id="nav-username"></span>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
+    <div class="navbar-right">
+      <button id="theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <div class="user-info" id="nav-user" style="display:none">
+        <span id="nav-username"></span>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
     </div>
   </nav>
 

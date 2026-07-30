@@ -5,13 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Materi — Drilling-100</title>
   <link rel="stylesheet" href="css/style.css?v=1">
+  <script src="js/theme.js?v=1"></script>
 </head>
 <body>
   <nav class="navbar">
     <a href="index.html" class="brand">📐 Drilling-100</a>
-    <div class="user-info" id="nav-user" style="display:none">
-      <span id="nav-username"></span>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
+    <div class="navbar-right">
+      <button id="theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <div class="user-info" id="nav-user" style="display:none">
+        <span id="nav-username"></span>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
     </div>
   </nav>
 

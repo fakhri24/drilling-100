@@ -5,13 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Drilling-100</title>
   <link rel="stylesheet" href="css/style.css?v=1">
+  <script src="js/theme.js?v=1"></script>
 </head>
 <body>
   <nav class="navbar">
     <a href="index.html" class="brand">📐 Drilling-100</a>
-    <div class="user-info" id="nav-user" style="display:none">
-      <span id="nav-username"></span>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
+    <div class="navbar-right">
+      <button id="theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <div class="user-info" id="nav-user" style="display:none">
+        <span id="nav-username"></span>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
     </div>
   </nav>
 
@@ -68,6 +72,12 @@
       { id: "12", emoji: "🎯", nama: "Pembulatan dan Estimasi" },
     ];
 
+    // Jumlah kompetensi per materi (06 cuma 2 — 6b di-skip)
+    const JUMLAH_KOMPETENSI = {
+      "01": 6, "02": 4, "03": 4, "04": 6, "05": 5, "06": 2,
+      "07": 5, "08": 3, "09": 2, "10": 4, "11": 4, "12": 4
+    };
+
     auth.onAuthStateChanged(async (user) => {
       if (!user) return;
 
@@ -107,14 +117,24 @@
       // Render materi grid
       const grid = document.getElementById("materi-grid");
       MATERI.forEach(m => {
+        const totalKomp = JUMLAH_KOMPETENSI[m.id];
+        let soalDikerjakan = 0;
+        let kompSelesai = 0;
+        allProgres.forEach((p, kompId) => {
+          if (!kompId.startsWith(m.id)) return;
+          soalDikerjakan += p.jawaban ? p.jawaban.length : 0;
+          if (p.selesai) kompSelesai++;
+        });
+        const persen = Math.round((soalDikerjakan / (totalKomp * 100)) * 100);
+
         const card = document.createElement("a");
         card.className = "materi-card";
         card.href = `materi.html?id=${m.id}`;
         card.innerHTML = `
           <div class="emoji">${m.emoji}</div>
           <div class="nama">${m.nama}</div>
-          <div class="progress-text">Klik untuk lihat kompetensi</div>
-          <div class="progress-bar"><div class="fill" style="width:0%"></div></div>
+          <div class="progress-text">${kompSelesai}/${totalKomp} kompetensi selesai</div>
+          <div class="progress-bar"><div class="fill${persen >= 100 ? " complete" : ""}" style="width:${persen}%"></div></div>
         `;
         grid.appendChild(card);
       });

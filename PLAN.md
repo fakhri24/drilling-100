@@ -111,16 +111,17 @@
 
 ---
 
-### FASE 6: Dashboard & UX Polish (Hari 9-11)
-- [ ] `dashboard.html` — Progres per materi (progress bar per kompetensi)
-- [ ] Statistik: total soal dikerjakan, akurasi rata-rata, streak terbaik
-- [ ] Leaderboard (opsional, bisa dimatikan)
-- [ ] Animasi & transisi halus
-- [ ] Sound effect benar/salah (opsional, toggle)
-- [ ] Dark mode toggle
-- [ ] Responsive check di HP (Android & iOS)
+### FASE 6: Dashboard & UX Polish (Hari 9-11) — sebagian ✅
+- [x] `dashboard.html` — Progres per materi (progress bar per kompetensi). Sebelumnya hardcode `width:0%`, sekarang dihitung dari soal yang sudah dikerjakan per materi
+- [x] Statistik: total soal dikerjakan, akurasi rata-rata (sudah ada dari FASE 2)
+- [ ] Streak terbaik — di-skip untuk sekarang (belum diminta)
+- [ ] Leaderboard (opsional) — di-skip, ada pertimbangan privasi (data siswa asli)
+- [x] Animasi & transisi halus — feedback benar/salah fade-in, transisi soal ke soal, transisi warna saat ganti tema
+- [ ] Sound effect benar/salah (opsional) — di-skip untuk sekarang
+- [x] Dark mode toggle — tersimpan di localStorage, dipasang di navbar semua halaman
+- [ ] Responsive check di HP — belum, akan dicek di FASE 7 (Testing & Deploy)
 
-**Deliverable**: Dashboard lengkap, UX halus
+**Deliverable**: Dashboard progres akurat, dark mode, animasi halus ✅ (leaderboard/sound effect/streak sengaja ditunda)
 
 ---
 
