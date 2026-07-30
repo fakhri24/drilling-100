@@ -27,7 +27,7 @@
     <!-- Drill Area -->
     <div id="drill-area" style="display:none">
       <div class="drill-header">
-        <a href="index.html" style="font-size:0.9rem; color:var(--text-secondary)">← Kembali</a>
+        <a href="index.html" id="link-kembali" style="font-size:0.9rem; color:var(--text-secondary)">← Kembali</a>
         <div class="drill-counter" id="drill-counter">0 / 100</div>
       </div>
 
@@ -163,6 +163,11 @@
           `Kompetensi tidak ditemukan.<br><a href="index.html">← Kembali</a>`;
         return;
       }
+
+      // "Kembali" mengarah ke daftar kompetensi materi ini (bukan daftar
+      // 12 materi), supaya lanjut ke kompetensi lain di materi yang sama
+      const materiId = kompetensiId.substring(0, 2);
+      document.getElementById("link-kembali").href = `materi.html?id=${materiId}`;
 
       // Init engine
       const config = REGISTRY[kompetensiId];
