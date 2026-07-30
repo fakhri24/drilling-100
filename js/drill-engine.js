@@ -236,8 +236,20 @@ class DrillEngine {
     // yang sama langsung mengklik tombol yang baru saja dapat fokus)
     setTimeout(() => this.els.btnNext.focus(), 0);
 
-    // Auto-save ke Firestore
-    await saveJawaban(this.user.uid, this.config.kompetensiId, this.soalIndex - 1, data);
+    // Auto-save ke Firestore. Dulu tidak ada try/catch di sini — kalau
+    // saveJawaban() gagal (mis. ditolak Firestore rules), errornya hilang
+    // tanpa jejak: feedback "Benar!" tetap tampil padahal progres TIDAK
+    // pernah tersimpan. Sekarang kalau gagal, tampilkan peringatan supaya
+    // siswa tahu progresnya belum aman.
+    try {
+      await saveJawaban(this.user.uid, this.config.kompetensiId, this.soalIndex - 1, data);
+    } catch (err) {
+      console.error("Gagal simpan progres ke Firestore:", err);
+      this.els.feedbackArea.innerHTML += `
+        <div class="feedback salah" style="margin-top:8px">
+          ⚠️ Progres GAGAL tersimpan (${err.code || err.message}). Jangan tutup halaman ini.
+        </div>`;
+    }
 
     // Cek apakah sudah selesai
     if (this.soalIndex >= this.totalSoal) {
