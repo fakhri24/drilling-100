@@ -213,7 +213,10 @@ class DrillEngine {
   renderInputNumerik() {
     this.els.pilihanArea.style.display = "none";
     this.els.pilihanArea.innerHTML = "";
-    this.els.jawabanInput.style.display = "block";
+    // "" (bukan "block") supaya balik ke default UA inline-block — kalau
+    // dipaksa "block", text-align:center di .soal-card tidak lagi bisa
+    // menengahkan elemennya (block box tidak di-center oleh text-align).
+    this.els.jawabanInput.style.display = "";
     this.els.jawabanInput.value = "";
     this.els.jawabanInput.disabled = false;
     this.els.jawabanInput.focus();
