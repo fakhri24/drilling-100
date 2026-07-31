@@ -390,16 +390,12 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   padding-bottom: 4px;
 }
 
-/* KaTeX default-nya white-space:nowrap di semua level (.katex-display>.katex
-   DAN turunannya) — perlu supaya rumus angka biasa tidak patah aneh di
-   tengah (spasi internal KaTeX antar simbol/operator ikut jadi titik
-   wrap kalau nowrap dimatikan, lihat kasus "(-40)  5" vs "÷ = ...").
-   Makanya override wrap TIDAK diterapkan global ke semua .pertanyaan,
-   hanya ke kompetensi yang memang berisi kalimat panjang (mis. 06b) —
-   drill-engine.js menandainya dengan class .pertanyaan-kalimat. */
-.soal-card .pertanyaan.pertanyaan-kalimat .katex-display > .katex,
-.soal-card .pertanyaan.pertanyaan-kalimat .katex-display > .katex * {
-  white-space: normal;
+/* Kompetensi berkalimat panjang (mis. 06b) di-render sebagai HTML biasa
+   (bukan lewat KaTeX — lihat drill-engine.js), jadi wrapping-nya otomatis
+   normal seperti paragraf. `<em>` dipakai untuk variabel seperti x supaya
+   tetap italic mirip gaya matematika. */
+.soal-card .pertanyaan em {
+  font-style: italic;
 }
 
 @media (max-width: 400px) {

@@ -173,19 +173,20 @@ class DrillEngine {
     this.soalSekarang = this.config.generateSoal();
     this.soalStartTime = Date.now();
 
-    // Kompetensi pilihan-ganda (mis. 06b) punya kalimat \text{} yang lebih
-    // panjang dari formula angka biasa — perlu boleh membungkus ke bawah.
-    // Class ini scoped supaya kompetensi numerik lain (mayoritas) tidak
-    // ikut terpengaruh override white-space (lihat catatan di style.css).
-    this.els.pertanyaan.classList.toggle(
-      "pertanyaan-kalimat",
-      this.config.tipeJawaban === "pilihan-ganda"
-    );
-
-    katex.render(this.soalSekarang.pertanyaan, this.els.pertanyaan, {
-      throwOnError: false,
-      displayMode: true,
-    });
+    // KaTeX membungkus satu ekspresi jadi satu span nowrap raksasa (tidak
+    // per-kata), jadi kalimat panjang (mis. 06b) tidak bisa dibuat wrap
+    // lewat KaTeX sama sekali — pernah dicoba paksa lewat CSS, hasilnya
+    // malah kepotong asal di tengah kata. Kompetensi yang menandai dirinya
+    // config.pertanyaanHtml jadi di-render sebagai HTML biasa (bukan
+    // katex.render) supaya teksnya wrap alami seperti paragraf normal.
+    if (this.config.pertanyaanHtml) {
+      this.els.pertanyaan.innerHTML = this.soalSekarang.pertanyaan;
+    } else {
+      katex.render(this.soalSekarang.pertanyaan, this.els.pertanyaan, {
+        throwOnError: false,
+        displayMode: true,
+      });
+    }
     // Re-trigger animasi fade-in: elemen pertanyaan di-reuse tiap soal
     // (bukan dibuat baru), jadi class-nya perlu dilepas & dipasang lagi
     // dengan reflow paksa di antaranya

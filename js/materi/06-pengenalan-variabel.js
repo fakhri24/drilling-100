@@ -45,6 +45,11 @@ const KOMPETENSI_06 = [
     deskripsi: "Kata kunci: jumlah/tambah → +, kurang/dikurangi → −, kali → ×, bagi → ÷. Perhatikan urutan sesuai kalimat",
     totalSoal: 100,
     tipeJawaban: "pilihan-ganda",
+    // Kalimatnya lebih panjang dari formula angka biasa & perlu bisa
+    // membungkus ke bawah — KaTeX tidak bisa wrap per-kata (satu ekspresi
+    // jadi satu span nowrap raksasa), jadi di-render sebagai HTML biasa,
+    // bukan lewat katex.render(). Lihat drill-engine.js.
+    pertanyaanHtml: true,
     generateSoal() {
       const a = randInt(2, 12);
       const b = randInt(1, 30);
@@ -54,44 +59,44 @@ const KOMPETENSI_06 = [
 
       switch (pola) {
         case 1:
-          teks = `\\text{Jumlah suatu bilangan } x \\text{ dengan } ${b}`;
+          teks = `Jumlah suatu bilangan <em>x</em> dengan ${b}`;
           benar = `x+${b}`;
           salah = [`x-${b}`, `${b}-x`, `${b}x`];
           break;
         case 2:
-          teks = `\\text{Suatu bilangan } x \\text{ dikurangi } ${b}`;
+          teks = `Suatu bilangan <em>x</em> dikurangi ${b}`;
           benar = `x-${b}`;
           salah = [`${b}-x`, `x+${b}`, `${b}x`];
           break;
         case 3:
-          teks = `${b} \\text{ dikurangi suatu bilangan } x`;
+          teks = `${b} dikurangi suatu bilangan <em>x</em>`;
           benar = `${b}-x`;
           salah = [`x-${b}`, `x+${b}`, `${b}x`];
           break;
         case 4:
-          teks = `\\text{Hasil kali } ${a} \\text{ dengan suatu bilangan } x`;
+          teks = `Hasil kali ${a} dengan suatu bilangan <em>x</em>`;
           benar = `${a}x`;
           salah = [`x+${a}`, `x-${a}`, `\\frac{x}{${a}}`];
           break;
         case 5:
-          teks = `\\text{Suatu bilangan } x \\text{ dibagi } ${a}`;
+          teks = `Suatu bilangan <em>x</em> dibagi ${a}`;
           benar = `\\frac{x}{${a}}`;
           salah = [`\\frac{${a}}{x}`, `${a}x`, `x-${a}`];
           break;
         case 6:
-          teks = `${a} \\text{ kali suatu bilangan } x\\text{, ditambah } ${b}`;
+          teks = `${a} kali suatu bilangan <em>x</em>, ditambah ${b}`;
           benar = `${a}x+${b}`;
           salah = [`${a}x-${b}`, `${a}(x+${b})`, `${a}+${b}x`];
           break;
         default:
-          teks = `${a} \\text{ kali suatu bilangan } x\\text{, dikurangi } ${b}`;
+          teks = `${a} kali suatu bilangan <em>x</em>, dikurangi ${b}`;
           benar = `${a}x-${b}`;
           salah = [`${a}x+${b}`, `${b}-${a}x`, `${a}(x-${b})`];
           break;
       }
 
       return {
-        pertanyaan: `${teks}\\text{, ditulis sebagai ekspresi aljabar} = \\ldots`,
+        pertanyaan: `${teks}, ditulis sebagai ekspresi aljabar = &hellip;`,
         jawaban: benar,
         pilihan: shuffleArray([benar, ...salah]),
         penjelasan: "Kata kunci: jumlah/tambah → +, kurang/dikurangi → −, kali → ×, bagi → ÷. Perhatikan urutan angka dan variabel sesuai kalimat"
