@@ -390,17 +390,15 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   padding-bottom: 4px;
 }
 
-/* KaTeX default-nya white-space:nowrap supaya rumus tidak patah aneh —
-   tapi soal yang mengandung kalimat panjang (mis. \text{...} di 06b) perlu
-   bisa membungkus ke bawah, bukan overflow ke samping / kepotong. KaTeX
-   men-set nowrap di beberapa level bersarang (.katex-display>.katex DAN
-   .katex-base di dalamnya), jadi override-nya perlu tembus ke semua level
-   turunan, bukan cuma elemen terluar. Selector di sini sengaja lebih
-   spesifik dari selector bawaan KaTeX supaya menang di cascade, terlepas
-   urutan <link> stylesheet. Soal bilangan murni (tanpa \text) tidak
-   terpengaruh — tanpa spasi di dalamnya, tidak ada titik untuk membungkus. */
-.soal-card .pertanyaan .katex-display > .katex,
-.soal-card .pertanyaan .katex-display > .katex * {
+/* KaTeX default-nya white-space:nowrap di semua level (.katex-display>.katex
+   DAN turunannya) — perlu supaya rumus angka biasa tidak patah aneh di
+   tengah (spasi internal KaTeX antar simbol/operator ikut jadi titik
+   wrap kalau nowrap dimatikan, lihat kasus "(-40)  5" vs "÷ = ...").
+   Makanya override wrap TIDAK diterapkan global ke semua .pertanyaan,
+   hanya ke kompetensi yang memang berisi kalimat panjang (mis. 06b) —
+   drill-engine.js menandainya dengan class .pertanyaan-kalimat. */
+.soal-card .pertanyaan.pertanyaan-kalimat .katex-display > .katex,
+.soal-card .pertanyaan.pertanyaan-kalimat .katex-display > .katex * {
   white-space: normal;
 }
 

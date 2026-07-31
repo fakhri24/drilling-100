@@ -173,6 +173,15 @@ class DrillEngine {
     this.soalSekarang = this.config.generateSoal();
     this.soalStartTime = Date.now();
 
+    // Kompetensi pilihan-ganda (mis. 06b) punya kalimat \text{} yang lebih
+    // panjang dari formula angka biasa — perlu boleh membungkus ke bawah.
+    // Class ini scoped supaya kompetensi numerik lain (mayoritas) tidak
+    // ikut terpengaruh override white-space (lihat catatan di style.css).
+    this.els.pertanyaan.classList.toggle(
+      "pertanyaan-kalimat",
+      this.config.tipeJawaban === "pilihan-ganda"
+    );
+
     katex.render(this.soalSekarang.pertanyaan, this.els.pertanyaan, {
       throwOnError: false,
       displayMode: true,
