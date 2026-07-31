@@ -423,10 +423,17 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   padding: 12px;
   border: 2px solid var(--border);
   border-radius: 8px;
-  width: 200px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 260px;
   background: var(--surface);
   color: var(--text);
+}
+
+/* Placeholder hint ("mis. 3, -2, ...") lebih panjang dari lebar input di
+   layar sempit — font placeholder dikecilkan supaya tidak kepotong border.
+   Angka yang benar-benar diketik siswa tetap pakai font-size 1.3rem di atas. */
+.soal-card input::placeholder {
+  font-size: 0.85rem;
 }
 
 .soal-card input:focus {
