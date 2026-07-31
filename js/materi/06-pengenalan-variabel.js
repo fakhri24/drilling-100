@@ -4,7 +4,7 @@
 // ekspresi (bukan angka tunggal) & tabrakan aturan "tanpa soal cerita".
 // Diselesaikan dengan tipeJawaban "pilihan-ganda": kalimat matematis pendek
 // (bukan soal cerita naratif) diterjemahkan ke ekspresi aljabar, siswa
-// pilih dari 5 opsi.
+// pilih dari 4 opsi.
 
 const KOMPETENSI_06 = [
   // ─────────────────────────────────────────────
@@ -56,37 +56,37 @@ const KOMPETENSI_06 = [
         case 1:
           teks = `\\text{Jumlah suatu bilangan } x \\text{ dengan } ${b}`;
           benar = `x+${b}`;
-          salah = [`x-${b}`, `${b}-x`, `${b}x`, `\\frac{x}{${b}}`];
+          salah = [`x-${b}`, `${b}-x`, `${b}x`];
           break;
         case 2:
           teks = `\\text{Suatu bilangan } x \\text{ dikurangi } ${b}`;
           benar = `x-${b}`;
-          salah = [`${b}-x`, `x+${b}`, `${b}x`, `\\frac{x}{${b}}`];
+          salah = [`${b}-x`, `x+${b}`, `${b}x`];
           break;
         case 3:
           teks = `${b} \\text{ dikurangi suatu bilangan } x`;
           benar = `${b}-x`;
-          salah = [`x-${b}`, `x+${b}`, `${b}x`, `\\frac{${b}}{x}`];
+          salah = [`x-${b}`, `x+${b}`, `${b}x`];
           break;
         case 4:
           teks = `\\text{Hasil kali } ${a} \\text{ dengan suatu bilangan } x`;
           benar = `${a}x`;
-          salah = [`x+${a}`, `x-${a}`, `\\frac{x}{${a}}`, `${a}+x`];
+          salah = [`x+${a}`, `x-${a}`, `\\frac{x}{${a}}`];
           break;
         case 5:
           teks = `\\text{Suatu bilangan } x \\text{ dibagi } ${a}`;
           benar = `\\frac{x}{${a}}`;
-          salah = [`\\frac{${a}}{x}`, `${a}x`, `x-${a}`, `x+${a}`];
+          salah = [`\\frac{${a}}{x}`, `${a}x`, `x-${a}`];
           break;
         case 6:
           teks = `${a} \\text{ kali suatu bilangan } x\\text{, ditambah } ${b}`;
           benar = `${a}x+${b}`;
-          salah = [`${a}x-${b}`, `${a}(x+${b})`, `x+${a}+${b}`, `${a}+${b}x`];
+          salah = [`${a}x-${b}`, `${a}(x+${b})`, `${a}+${b}x`];
           break;
         default:
           teks = `${a} \\text{ kali suatu bilangan } x\\text{, dikurangi } ${b}`;
           benar = `${a}x-${b}`;
-          salah = [`${a}x+${b}`, `${b}-${a}x`, `${a}(x-${b})`, `x-${a}-${b}`];
+          salah = [`${a}x+${b}`, `${b}-${a}x`, `${a}(x-${b})`];
           break;
       }
 
