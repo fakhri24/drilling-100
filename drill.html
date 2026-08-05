@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Drilling — Drilling-100</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script src="js/theme.js?v=3"></script>
+  <script src="js/theme.js?v=4"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -85,24 +85,30 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
-  <script src="js/progres.js?v=3"></script>
-  <script src="js/drill-engine.js?v=3"></script>
+  <script src="js/firebase-config.js?v=4"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/progres.js?v=4"></script>
+  <script src="js/kurikulum.js?v=4"></script>
+  <script src="js/drill-engine.js?v=4"></script>
 
   <!-- Materi scripts — load all (registers KOMPETENSI_XX globals) -->
-  <script src="js/materi/01-operasi-aritmatika-dasar.js?v=3"></script>
-  <script src="js/materi/02-sifat-operasi-bilangan.js?v=3"></script>
-  <script src="js/materi/03-kpk-dan-fpb.js?v=3"></script>
-  <script src="js/materi/04-operasi-pecahan.js?v=3"></script>
-  <script src="js/materi/05-operasi-konversi-desimal.js?v=3"></script>
-  <script src="js/materi/06-pengenalan-variabel.js?v=3"></script>
-  <script src="js/materi/07-manipulasi-aljabar-dasar.js?v=3"></script>
-  <script src="js/materi/08-plsv.js?v=3"></script>
-  <script src="js/materi/09-spldv.js?v=3"></script>
-  <script src="js/materi/10-persentase.js?v=3"></script>
-  <script src="js/materi/11-perbandingan-dan-skala.js?v=3"></script>
-  <script src="js/materi/12-pembulatan-dan-estimasi.js?v=3"></script>
+  <script src="js/materi/01-operasi-aritmatika-dasar.js?v=4"></script>
+  <script src="js/materi/02-sifat-operasi-bilangan.js?v=4"></script>
+  <script src="js/materi/03-kpk-dan-fpb.js?v=4"></script>
+  <script src="js/materi/04-operasi-pecahan.js?v=4"></script>
+  <script src="js/materi/05-operasi-konversi-desimal.js?v=4"></script>
+  <script src="js/materi/06-pengenalan-variabel.js?v=4"></script>
+  <script src="js/materi/07-manipulasi-aljabar-dasar.js?v=4"></script>
+  <script src="js/materi/08-plsv.js?v=4"></script>
+  <script src="js/materi/09-spldv.js?v=4"></script>
+  <script src="js/materi/10-persentase.js?v=4"></script>
+  <script src="js/materi/11-perbandingan-dan-skala.js?v=4"></script>
+  <script src="js/materi/12-pembulatan-dan-estimasi.js?v=4"></script>
+  <script src="js/materi/E1-sifat-eksponen-bulat.js?v=4"></script>
+  <script src="js/materi/E2-operasi-bentuk-akar.js?v=4"></script>
+  <script src="js/materi/E3-merasionalkan-penyebut.js?v=4"></script>
+  <script src="js/materi/E4-eksponen-rasional.js?v=4"></script>
+  <script src="js/materi/E5-fungsi-eksponen.js?v=4"></script>
 
   <script>
     // Registry: kompetensiId → config
@@ -124,6 +130,11 @@
     registerMateri(KOMPETENSI_10);
     registerMateri(KOMPETENSI_11);
     registerMateri(KOMPETENSI_12);
+    registerMateri(KOMPETENSI_E1);
+    registerMateri(KOMPETENSI_E2);
+    registerMateri(KOMPETENSI_E3);
+    registerMateri(KOMPETENSI_E4);
+    registerMateri(KOMPETENSI_E5);
 
     let engine = null;
     let initialized = false;
@@ -165,10 +176,13 @@
         return;
       }
 
-      // "Kembali" mengarah ke daftar kompetensi materi ini (bukan daftar
-      // 12 materi), supaya lanjut ke kompetensi lain di materi yang sama
-      const materiId = kompetensiId.substring(0, 2);
-      document.getElementById("link-kembali").href = `materi.html?id=${materiId}`;
+      // "Kembali" mengarah ke daftar kompetensi sub-materi ini (bukan daftar
+      // semua materi), supaya lanjut ke kompetensi lain di sub-materi yang sama
+      const asal = getSubMateriDariKompetensi(kompetensiId);
+      if (asal) {
+        document.getElementById("link-kembali").href = `materi.html?id=${asal.subMateri.id}`;
+        document.getElementById("link-kembali").textContent = `← ${asal.subMateri.nama}`;
+      }
 
       // Init engine
       const config = REGISTRY[kompetensiId];

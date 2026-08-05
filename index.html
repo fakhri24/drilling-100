@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Drilling-100 — Latihan Numerasi X</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
-  <script src="js/theme.js?v=3"></script>
+  <link rel="stylesheet" href="css/style.css?v=4">
+  <script src="js/theme.js?v=4"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -22,13 +22,14 @@
   <div class="container">
     <div class="welcome">
       <h1>📐 Drilling-100</h1>
-      <p class="subtitle">Latihan 100 soal per kompetensi — numerasi kelas X</p>
+      <p class="subtitle">Latihan 100 soal per kompetensi — matematika kelas X</p>
     </div>
 
     <div class="loading" id="loading">Memuat...</div>
 
-    <div class="materi-grid" id="materi-grid" style="display:none">
-      <!-- Akan diisi oleh JS -->
+    <div id="konten" style="display:none">
+      <div class="tab-bar" id="tab-bar" role="tablist"></div>
+      <div class="materi-grid" id="materi-grid"></div>
     </div>
   </div>
 
@@ -36,55 +37,84 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
+  <script src="js/firebase-config.js?v=4"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/progres.js?v=4"></script>
+  <script src="js/kurikulum.js?v=4"></script>
   <script>
-    // Daftar 12 materi
-    const MATERI = [
-      { id: "01", emoji: "🧮", nama: "Operasi Aritmatika Dasar" },
-      { id: "02", emoji: "🔢", nama: "Sifat Operasi Bilangan" },
-      { id: "03", emoji: "🧩", nama: "KPK dan FPB" },
-      { id: "04", emoji: "🍰", nama: "Operasi Pecahan" },
-      { id: "05", emoji: "🔟", nama: "Operasi dan Konversi Desimal" },
-      { id: "06", emoji: "🔤", nama: "Pengenalan Variabel" },
-      { id: "07", emoji: "🧮", nama: "Manipulasi Aljabar Dasar" },
-      { id: "08", emoji: "⚖️", nama: "PLSV" },
-      { id: "09", emoji: "📐", nama: "SPLDV" },
-      { id: "10", emoji: "💯", nama: "Persentase" },
-      { id: "11", emoji: "📏", nama: "Perbandingan dan Skala" },
-      { id: "12", emoji: "🎯", nama: "Pembulatan dan Estimasi" },
-    ];
+    // Tab terakhir diingat supaya siswa yang sedang mengerjakan satu materi
+    // utama tidak perlu memilih tabnya lagi tiap kali membuka beranda
+    const KUNCI_TAB = "drilling100_tab";
 
-    // Render materi grid
+    function renderGrid(materiUtama, allProgres) {
+      const grid = document.getElementById("materi-grid");
+      grid.innerHTML = "";
+
+      materiUtama.subMateri.forEach(sub => {
+        const totalKomp = sub.kompetensi.length;
+        let soalDikerjakan = 0;
+        let kompSelesai = 0;
+        sub.kompetensi.forEach(k => {
+          const p = allProgres.get(k.id);
+          if (!p) return;
+          soalDikerjakan += p.jawaban ? p.jawaban.length : 0;
+          if (p.selesai) kompSelesai++;
+        });
+        const persen = Math.round((soalDikerjakan / (totalKomp * 100)) * 100);
+
+        const card = document.createElement("a");
+        card.className = "materi-card";
+        card.href = `materi.html?id=${sub.id}`;
+        card.innerHTML = `
+          <div class="emoji">${sub.emoji}</div>
+          <div class="nama">${sub.nama}</div>
+          <div class="progress-text">${kompSelesai}/${totalKomp} kompetensi selesai</div>
+          <div class="progress-bar"><div class="fill${persen >= 100 ? " complete" : ""}" style="width:${persen}%"></div></div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function pilihTab(idMateriUtama, allProgres) {
+      localStorage.setItem(KUNCI_TAB, idMateriUtama);
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const aktif = btn.dataset.id === idMateriUtama;
+        btn.classList.toggle("aktif", aktif);
+        btn.setAttribute("aria-selected", String(aktif));
+      });
+      renderGrid(getMateriUtama(idMateriUtama), allProgres);
+    }
+
     auth.onAuthStateChanged(async (user) => {
       if (!user) return;
 
-      const grid = document.getElementById("materi-grid");
-      const loading = document.getElementById("loading");
       const navUser = document.getElementById("nav-user");
       const navUsername = document.getElementById("nav-username");
-
-      // Tampilkan username di navbar
       const username = await getUsername(user.uid);
       navUsername.textContent = username || user.displayName;
       navUser.style.display = "flex";
 
-      // Render cards
-      MATERI.forEach(m => {
-        const card = document.createElement("a");
-        card.className = "materi-card";
-        card.href = `materi.html?id=${m.id}`;
-        card.innerHTML = `
-          <div class="emoji">${m.emoji}</div>
-          <div class="nama">${m.nama}</div>
-          <div class="progress-text">Klik untuk lihat kompetensi</div>
-          <div class="progress-bar"><div class="fill" style="width:0%"></div></div>
-        `;
-        grid.appendChild(card);
+      const allProgres = await getAllProgres(user.uid);
+
+      // Bangun tab
+      const tabBar = document.getElementById("tab-bar");
+      KURIKULUM.forEach(m => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tab-btn";
+        btn.dataset.id = m.id;
+        btn.setAttribute("role", "tab");
+        btn.textContent = `${m.emoji} ${m.nama}`;
+        btn.addEventListener("click", () => pilihTab(m.id, allProgres));
+        tabBar.appendChild(btn);
       });
 
-      loading.style.display = "none";
-      grid.style.display = "grid";
+      const tersimpan = localStorage.getItem(KUNCI_TAB);
+      const awal = getMateriUtama(tersimpan) ? tersimpan : KURIKULUM[0].id;
+      pilihTab(awal, allProgres);
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("konten").style.display = "block";
     });
   </script>
 </body>

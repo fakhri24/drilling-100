@@ -51,7 +51,7 @@ const KOMPETENSI_05 = [
   // ─────────────────────────────────────────────
   {
     id: "05c",
-    nama: "Penjumlahan/Pengurangan Desimal",
+    nama: "Tambah/Kurang Desimal",
     deskripsi: "Samakan jumlah angka di belakang koma, lalu jumlah/kurangkan",
     totalSoal: 100,
     generateSoal() {

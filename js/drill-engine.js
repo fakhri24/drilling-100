@@ -22,6 +22,13 @@ function shuffleArray(arr) {
 }
 
 /**
+ * Ambil satu elemen acak dari array
+ */
+function pilihAcak(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
  * FPB (greatest common divisor) dua bilangan bulat positif
  */
 function gcd(a, b) {

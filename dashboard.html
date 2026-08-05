@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Drilling-100</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
-  <script src="js/theme.js?v=3"></script>
+  <link rel="stylesheet" href="css/style.css?v=4">
+  <script src="js/theme.js?v=4"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -43,9 +43,8 @@
         </div>
       </div>
 
-      <!-- Daftar materi -->
-      <h2 style="font-size:1.1rem; margin:20px 0 12px">📚 Pilih Materi</h2>
-      <div class="materi-grid" id="materi-grid"></div>
+      <!-- Daftar materi, dikelompokkan per materi utama -->
+      <div id="daftar-materi"></div>
     </div>
   </div>
 
@@ -53,31 +52,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
-  <script src="js/progres.js?v=3"></script>
+  <script src="js/firebase-config.js?v=4"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/progres.js?v=4"></script>
+  <script src="js/kurikulum.js?v=4"></script>
   <script>
-    const MATERI = [
-      { id: "01", emoji: "🧮", nama: "Operasi Aritmatika Dasar" },
-      { id: "02", emoji: "🔢", nama: "Sifat Operasi Bilangan" },
-      { id: "03", emoji: "🧩", nama: "KPK dan FPB" },
-      { id: "04", emoji: "🍰", nama: "Operasi Pecahan" },
-      { id: "05", emoji: "🔟", nama: "Operasi dan Konversi Desimal" },
-      { id: "06", emoji: "🔤", nama: "Pengenalan Variabel" },
-      { id: "07", emoji: "🧮", nama: "Manipulasi Aljabar Dasar" },
-      { id: "08", emoji: "⚖️", nama: "PLSV" },
-      { id: "09", emoji: "📐", nama: "SPLDV" },
-      { id: "10", emoji: "💯", nama: "Persentase" },
-      { id: "11", emoji: "📏", nama: "Perbandingan dan Skala" },
-      { id: "12", emoji: "🎯", nama: "Pembulatan dan Estimasi" },
-    ];
-
-    // Jumlah kompetensi per materi (06 cuma 2 — 6b di-skip)
-    const JUMLAH_KOMPETENSI = {
-      "01": 6, "02": 4, "03": 4, "04": 6, "05": 5, "06": 2,
-      "07": 5, "08": 3, "09": 2, "10": 4, "11": 4, "12": 4
-    };
-
     auth.onAuthStateChanged(async (user) => {
       if (!user) return;
 
@@ -114,29 +93,44 @@
       document.getElementById("stat-akurasi").textContent = totalSoal > 0
         ? Math.round((totalBenar / totalSoal) * 100) + "%" : "-";
 
-      // Render materi grid
-      const grid = document.getElementById("materi-grid");
-      MATERI.forEach(m => {
-        const totalKomp = JUMLAH_KOMPETENSI[m.id];
-        let soalDikerjakan = 0;
-        let kompSelesai = 0;
-        allProgres.forEach((p, kompId) => {
-          if (!kompId.startsWith(m.id)) return;
-          soalDikerjakan += p.jawaban ? p.jawaban.length : 0;
-          if (p.selesai) kompSelesai++;
-        });
-        const persen = Math.round((soalDikerjakan / (totalKomp * 100)) * 100);
+      // Render daftar materi, satu blok per materi utama. Jumlah kompetensi
+      // dibaca dari kurikulum.js — dulu di-hardcode di sini dan sempat
+      // ketinggalan zaman (materi 06 ditulis 2 padahal sudah 3).
+      const daftar = document.getElementById("daftar-materi");
+      KURIKULUM.forEach(materiUtama => {
+        const judul = document.createElement("h2");
+        judul.style.cssText = "font-size:1.1rem; margin:20px 0 12px";
+        judul.textContent = `${materiUtama.emoji} ${materiUtama.nama}`;
+        daftar.appendChild(judul);
 
-        const card = document.createElement("a");
-        card.className = "materi-card";
-        card.href = `materi.html?id=${m.id}`;
-        card.innerHTML = `
-          <div class="emoji">${m.emoji}</div>
-          <div class="nama">${m.nama}</div>
-          <div class="progress-text">${kompSelesai}/${totalKomp} kompetensi selesai</div>
-          <div class="progress-bar"><div class="fill${persen >= 100 ? " complete" : ""}" style="width:${persen}%"></div></div>
-        `;
-        grid.appendChild(card);
+        const grid = document.createElement("div");
+        grid.className = "materi-grid";
+
+        materiUtama.subMateri.forEach(sub => {
+          const totalKomp = sub.kompetensi.length;
+          let soalDikerjakan = 0;
+          let kompSelesai = 0;
+          sub.kompetensi.forEach(k => {
+            const p = allProgres.get(k.id);
+            if (!p) return;
+            soalDikerjakan += p.jawaban ? p.jawaban.length : 0;
+            if (p.selesai) kompSelesai++;
+          });
+          const persen = Math.round((soalDikerjakan / (totalKomp * 100)) * 100);
+
+          const card = document.createElement("a");
+          card.className = "materi-card";
+          card.href = `materi.html?id=${sub.id}`;
+          card.innerHTML = `
+            <div class="emoji">${sub.emoji}</div>
+            <div class="nama">${sub.nama}</div>
+            <div class="progress-text">${kompSelesai}/${totalKomp} kompetensi selesai</div>
+            <div class="progress-bar"><div class="fill${persen >= 100 ? " complete" : ""}" style="width:${persen}%"></div></div>
+          `;
+          grid.appendChild(card);
+        });
+
+        daftar.appendChild(grid);
       });
 
       loading.style.display = "none";

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Uji Render Soal — Drilling-100</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; margin: 24px; line-height: 1.5; }
+    h2 { margin: 24px 0 8px; font-size: 1rem; }
+    .baris { display: flex; align-items: center; gap: 16px; padding: 4px 0; border-bottom: 1px solid #eee; }
+    .soal { flex: 1; }
+    .jwb { font-family: monospace; color: #555; min-width: 90px; }
+    .gagal { background: #fde8ea; }
+    #ringkasan { position: sticky; top: 0; background: #fff; padding: 12px 0; font-weight: 700; border-bottom: 2px solid #333; }
+  </style>
+</head>
+<body>
+  <!--
+    Halaman uji manual: merender setiap generator lewat KaTeX persis seperti
+    drill.html, tanpa Firebase/login. Dipakai untuk menangkap salah ketik
+    LaTeX — tools/verifikasi-soal-eksponen.mjs membuang perintah LaTeX
+    sebelum menghitung, jadi notasi rusak lolos dari sana.
+
+    Jalankan dari akar repo:  python3 -m http.server 8765
+    lalu buka:                http://localhost:8765/tools/uji-render.html
+  -->
+  <h1>Uji Render Soal</h1>
+  <div id="ringkasan">Memuat...</div>
+  <div id="keluaran"></div>
+
+  <script src="../js/drill-engine.js"></script>
+  <script src="../js/kurikulum.js"></script>
+  <script src="../js/materi/01-operasi-aritmatika-dasar.js"></script>
+  <script src="../js/materi/02-sifat-operasi-bilangan.js"></script>
+  <script src="../js/materi/03-kpk-dan-fpb.js"></script>
+  <script src="../js/materi/04-operasi-pecahan.js"></script>
+  <script src="../js/materi/05-operasi-konversi-desimal.js"></script>
+  <script src="../js/materi/06-pengenalan-variabel.js"></script>
+  <script src="../js/materi/07-manipulasi-aljabar-dasar.js"></script>
+  <script src="../js/materi/08-plsv.js"></script>
+  <script src="../js/materi/09-spldv.js"></script>
+  <script src="../js/materi/10-persentase.js"></script>
+  <script src="../js/materi/11-perbandingan-dan-skala.js"></script>
+  <script src="../js/materi/12-pembulatan-dan-estimasi.js"></script>
+  <script src="../js/materi/E1-sifat-eksponen-bulat.js"></script>
+  <script src="../js/materi/E2-operasi-bentuk-akar.js"></script>
+  <script src="../js/materi/E3-merasionalkan-penyebut.js"></script>
+  <script src="../js/materi/E4-eksponen-rasional.js"></script>
+  <script src="../js/materi/E5-fungsi-eksponen.js"></script>
+  <script>
+    const SEMUA = [].concat(
+      KOMPETENSI_01, KOMPETENSI_02, KOMPETENSI_03, KOMPETENSI_04,
+      KOMPETENSI_05, KOMPETENSI_06, KOMPETENSI_07, KOMPETENSI_08,
+      KOMPETENSI_09, KOMPETENSI_10, KOMPETENSI_11, KOMPETENSI_12,
+      KOMPETENSI_E1, KOMPETENSI_E2, KOMPETENSI_E3, KOMPETENSI_E4, KOMPETENSI_E5
+    );
+    const PER_KOMPETENSI = 12;
+
+    const keluaran = document.getElementById("keluaran");
+    const gagal = [];
+
+    SEMUA.forEach(komp => {
+      const h = document.createElement("h2");
+      h.textContent = `${komp.id} — ${komp.nama}`;
+      keluaran.appendChild(h);
+
+      for (let i = 0; i < PER_KOMPETENSI; i++) {
+        const soal = komp.generateSoal();
+        const baris = document.createElement("div");
+        baris.className = "baris";
+        const el = document.createElement("div");
+        el.className = "soal";
+
+        // Persis alur drill-engine.renderSoal()
+        if (komp.pertanyaanHtml) {
+          el.innerHTML = soal.pertanyaan;
+        } else {
+          try {
+            katex.render(soal.pertanyaan, el, { throwOnError: true, displayMode: true });
+          } catch (e) {
+            baris.classList.add("gagal");
+            el.textContent = `KATEX GAGAL: ${e.message} — ${soal.pertanyaan}`;
+            gagal.push(`${komp.id}: ${e.message} — ${soal.pertanyaan}`);
+          }
+        }
+
+        const jwb = document.createElement("div");
+        jwb.className = "jwb";
+        jwb.textContent = String(soal.jawaban);
+
+        baris.appendChild(el);
+        baris.appendChild(jwb);
+        keluaran.appendChild(baris);
+      }
+    });
+
+    const ringkasan = document.getElementById("ringkasan");
+    const total = SEMUA.length * PER_KOMPETENSI;
+    ringkasan.textContent = gagal.length === 0
+      ? `✓ ${SEMUA.length} kompetensi, ${total} soal dirender tanpa error KaTeX`
+      : `✗ ${gagal.length} dari ${total} soal GAGAL dirender`;
+    window.__hasilUji = { total, gagal };
+    console.log(ringkasan.textContent);
+    gagal.forEach(g => console.log("GAGAL: " + g));
+  </script>
+</body>
+</html>

@@ -158,6 +158,45 @@ body, .card, .navbar, .materi-card, .kompetensi-item, .soal-card,
   margin-bottom: 12px;
 }
 
+/* Tab Materi Utama — bergulir horizontal di HP kalau materi utamanya bertambah */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.tab-btn:hover {
+  border-color: var(--primary);
+}
+
+.tab-btn.aktif {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
 /* Materi Grid */
 .materi-grid {
   display: grid;
